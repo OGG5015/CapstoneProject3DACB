@@ -19,6 +19,12 @@ public class HexGrid : MonoBehaviour
             {
                 Vector3 centrePosition = HexMetrics.Center(HexSize, x, z, Orientation) + transform.position;
 
+                float percentage = (float)z / Height;
+
+                Color color = new Color(0f, percentage, 1f - percentage);
+
+                Gizmos.color = color;
+
                 for(int s = 0; s < HexMetrics.Corners(HexSize, Orientation).Length; s++)
                 {
                     Gizmos.DrawLine(
@@ -29,6 +35,7 @@ public class HexGrid : MonoBehaviour
             }
         }
     }
+
     
 }
 

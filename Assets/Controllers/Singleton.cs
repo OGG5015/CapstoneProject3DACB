@@ -63,7 +63,7 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     private static readonly object _instanceLock = new object();
     private static bool _quitting = false;
 
-    public static T Instance
+    public static T instance
     {
         get
         {

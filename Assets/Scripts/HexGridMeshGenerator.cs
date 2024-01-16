@@ -28,8 +28,8 @@ public class HexGridMeshGenerator : MonoBehaviour
         /*MouseController.instance.OnLeftMouseClick += OnLeftMouseClick;
         MouseController.instance.OnRightMouseClick += OnRightMouseClick;*/
 
-        MouseController.Instance.OnLeftMouseClick += OnLeftMouseClick;
-        MouseController.Instance.OnRightMouseClick += OnRightMouseClick;
+        MouseController.instance.OnLeftMouseClick += OnLeftMouseClick;
+        MouseController.instance.OnRightMouseClick += OnRightMouseClick;
 
     }
 
@@ -38,8 +38,8 @@ public class HexGridMeshGenerator : MonoBehaviour
         /*MouseController.instance.OnLeftMouseClick -= OnLeftMouseClick;
         MouseController.instance.OnRightMouseClick -= OnRightMouseClick;*/
 
-        MouseController.Instance.OnLeftMouseClick -= OnLeftMouseClick;
-        MouseController.Instance.OnRightMouseClick -= OnRightMouseClick;
+        MouseController.instance.OnLeftMouseClick -= OnLeftMouseClick;
+        MouseController.instance.OnRightMouseClick -= OnRightMouseClick;
 
     }
 

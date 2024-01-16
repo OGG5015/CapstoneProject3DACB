@@ -5,16 +5,16 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638403552096549489
-    m_Hash: 1646665576
+      ticks: 638409423569695516
+    m_Hash: 105689471
   m_LockFileStatus:
     m_FilePath: C:/Users/Olivia Gibbs/AutoChessBattler/Packages/packages-lock.json
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638403552447848085
-    m_Hash: 4059302960
+      ticks: 638409423569705531
+    m_Hash: 4138499133
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
 m_LocalPackages:

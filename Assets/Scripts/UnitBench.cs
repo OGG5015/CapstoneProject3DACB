@@ -4,27 +4,40 @@ using UnityEngine;
 
 public class UnitBench : MonoBehaviour
 {
-    /*public GameObject squarePrefab;
-    public int numberOfSquares = 7;
-    public float squareSpacing = 1.5f;
+    
+    [SerializeField] private int numberOfSquares = 7;
+    [SerializeField] private float squareSize = 1.0f;
 
-    void Start()
+    private void OnDrawGizmos()
     {
-        CreateUnitBench();
-    }
+        // Set the color for Gizmos
+        Gizmos.color = Color.white;
 
-    void CreateUnitBench()
-    {
         for (int i = 0; i < numberOfSquares; i++)
         {
-            // Calculate position for each square
-            float xPos = i * squareSpacing;
+            // Calculate the position for each square
+            Vector3 squarePosition = transform.position + Vector3.right * i * squareSize;
 
-            // Instantiate a square at the calculated position
-            GameObject square = Instantiate(squarePrefab, new Vector3(xPos, 0f, 0f), Quaternion.identity);
-
-            // Set the square as a child of the bench for organization
-            square.transform.SetParent(transform);
+            // Draw the square using Gizmos
+            DrawSquare(squarePosition, squareSize);
         }
-    }*/
+    }
+
+    private void DrawSquare(Vector3 position, float size)
+    {
+        float halfSize = size / 2;
+
+        // Define the four corners of the square
+        Vector3 topLeft = position + new Vector3(-halfSize, 0, halfSize);
+        Vector3 topRight = position + new Vector3(halfSize, 0, halfSize);
+        Vector3 bottomLeft = position + new Vector3(-halfSize, 0, -halfSize);
+        Vector3 bottomRight = position + new Vector3(halfSize, 0, -halfSize);
+
+        // Draw lines to form the square
+        Gizmos.DrawLine(topLeft, topRight);
+        Gizmos.DrawLine(topRight, bottomRight);
+        Gizmos.DrawLine(bottomRight, bottomLeft);
+        Gizmos.DrawLine(bottomLeft, topLeft);
+    }
 }
+

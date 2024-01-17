@@ -11,7 +11,7 @@ public class UnitBench : MonoBehaviour
     private void OnDrawGizmos()
     {
         // Set the color for Gizmos
-        Gizmos.color = Color.white;
+        Gizmos.color = Color.black;
 
         for (int i = 0; i < numberOfSquares; i++)
         {

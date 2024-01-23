@@ -10,13 +10,16 @@ public class HexGridMeshGenerator : MonoBehaviour
     [field: SerializeField] public HexGrid hexGrid { get; private set; }
     public Transform explosionTest;
 
+    private bool isDragging = false;
+    private Vector3 offset;
+
+    private GameObject draggedObject;
+
+
     private void Awake()
     {
         hexGrid = GetComponentInParent<HexGrid>();
-        /*if(hexGrid == null)
-        {
-            hexGrid = GetComponentInParent<HexGrid>();
-        }*/
+        
         if (hexGrid == null)
         {
             Debug.LogError("HexGridMeshGenerator count not find a HexGrid component in its parent or itself");
@@ -25,22 +28,14 @@ public class HexGridMeshGenerator : MonoBehaviour
 
     private void OnEnable()
     {
-        /*MouseController.instance.OnLeftMouseClick += OnLeftMouseClick;
-        MouseController.instance.OnRightMouseClick += OnRightMouseClick;*/
-
         MouseController.instance.OnLeftMouseClick += OnLeftMouseClick;
         MouseController.instance.OnRightMouseClick += OnRightMouseClick;
-
     }
 
     private void OnDisable()
     {
-        /*MouseController.instance.OnLeftMouseClick -= OnLeftMouseClick;
-        MouseController.instance.OnRightMouseClick -= OnRightMouseClick;*/
-
         MouseController.instance.OnLeftMouseClick -= OnLeftMouseClick;
         MouseController.instance.OnRightMouseClick -= OnRightMouseClick;
-
     }
 
     public void CreateHexMesh()
@@ -137,6 +132,15 @@ public class HexGridMeshGenerator : MonoBehaviour
     private void OnLeftMouseClick(RaycastHit hit)
     {
         Debug.Log("Hit object: " + hit.transform.name + " at position " + hit.point);
+
+        //new code
+        if(hit.transform.GetComponent<HexGridMeshGenerator>() != this)
+        {
+            StartDragging(hit.transform.gameObject);
+
+        }
+
+        //end new code
         float localX = hit.point.x - hit.transform.position.x;
         float localZ = hit.point.z - hit.transform.position.z;
 
@@ -152,5 +156,30 @@ public class HexGridMeshGenerator : MonoBehaviour
         Vector3 center = HexMetrics.Center(hexGrid.HexSize, (int)location.x, (int)location.y, hexGrid.Orientation);
         Debug.Log("Right Clicked on Hex: " + location);
         Instantiate(explosionTest, center, Quaternion.identity);
+    }
+//new code
+private void StartDragging(GameObject obj)
+{
+    draggedObject = obj;
+    offset = draggedObject.transform.position - Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+}
+    private void Update()
+    {
+        if(draggedObject != null)
+        {
+            HandleDragging();
+        }
+    }
+
+    void HandleDragging()
+    {
+        Vector3 newPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition) + offset;
+        transform.position = new Vector3(newPosition.x, newPosition.y, transform.position.z);
+
+        if(Input.GetMouseButton(0))
+        {
+            draggedObject = null;
+        }
     }
 }

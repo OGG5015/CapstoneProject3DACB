@@ -1,0 +1,29 @@
+
+/*Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+        {
+            HexGrid hexGrid = hit.collider.GetComponentInParent<HexGrid>();
+            Debug.Log("HexGrid: " + hexGrid);
+
+            if (hexGrid != null)
+            {
+                //Vector2 hexCenter = HexMetrics.CoordinateToAxial(hit.point.x, hit.point.z, hexGrid.HexSize, hexGrid.Orientation);
+                //Vector3 center = HexMetrics.Center(hexGrid.HexSize, (int)hexCenter.x, (int)hexCenter.y, hexGrid.Orientation);
+
+                Vector3 hexCenterAxial = HexMetrics.CoordinateToAxial(hit.point.x, hit.point.z, hexGrid.HexSize, hexGrid.Orientation);
+                //Vector2 hexCenter = HexMetrics.CoordinateToAxial(hit.point.x, hit.point.z, hexGrid.HexSize, hexGrid.Orientation);
+                Vector3 center = HexMetrics.Center(hexGrid.HexSize, (int)hexCenterAxial.x, (int)hexCenterAxial.y, hexGrid.Orientation);
+
+                transform.position = center;
+
+                Debug.Log("Hex Center: " + hexCenterAxial);
+                Debug.Log("Snapped to: " + center);
+            }
+            else
+            {
+                Debug.Log("Hex grid is null");
+            }
+        }
+    }*/

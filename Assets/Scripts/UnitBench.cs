@@ -4,22 +4,32 @@ using UnityEngine;
 
 public class UnitBench : MonoBehaviour
 {
-    
-    [SerializeField] private int numberOfSquares = 7;
-    [SerializeField] private float squareSize = 1.0f;
+
+    //[SerializeField] private int numberOfSquares = 7;
+    //[SerializeField] private float squareSize = 1.0f;
+
+    [field: SerializeField] public int Width { get; private set; }
+    [field: SerializeField] public float SquareSize { get; private set; }
 
     private void OnDrawGizmos()
     {
         // Set the color for Gizmos
-        Gizmos.color = Color.white;
+        Gizmos.color = Color.black;
 
-        for (int i = 0; i < numberOfSquares; i++)
+        /*for (int i = 0; i < Width; i++)
         {
-            // Calculate the position for each square
-            Vector3 squarePosition = transform.position + Vector3.right * i * squareSize;
+            Vector3 squarePosition = transform.position + Vector3.right * i * Width;
 
-            // Draw the square using Gizmos
-            DrawSquare(squarePosition, squareSize);
+            DrawSquare(squarePosition, Width);
+
+            //add code so that SquareSize works
+        }*/
+        
+        for (int i = 0; i < Width; i++)
+        {
+            Vector3 squarePosition = transform.position + Vector3.right * i * SquareSize;
+
+            DrawSquare(squarePosition, SquareSize);
         }
     }
 
@@ -39,5 +49,16 @@ public class UnitBench : MonoBehaviour
         Gizmos.DrawLine(bottomRight, bottomLeft);
         Gizmos.DrawLine(bottomLeft, topLeft);
     }
-}
 
+    /*public int GetNumberOfSquares()
+    {
+        return Width;
+    }
+
+    public float GetSquareSize()
+    {
+        return SquareSize;
+    }*/
+
+
+}

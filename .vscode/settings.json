@@ -51,5 +51,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "AutoChessBattler.sln"
+    "dotnet.defaultSolution": "CapstoneProject3DACB.sln"
 }

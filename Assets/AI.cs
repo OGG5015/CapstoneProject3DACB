@@ -11,6 +11,7 @@ public class AI : MonoBehaviour{
     //2.5: if nearest enemy not in range, move towards nearest enemy
     //3: repeat
     //x & y keep track of units current position on board
+    //pass by reference not copy
 
     //int x;
     //int y;

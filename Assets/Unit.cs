@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Unit{
+public class Unit : MonoBehaviour
+{
     private int xCoord;
     private int yCoord;
     private int nearX;
@@ -20,9 +21,10 @@ public class Unit{
     private bool phys;
     private string trait1;
     private string trait2;
+    private int team;
     //private ArrayList traitList;
 
-    public Unit(int maxHp, int str, int mag, int def, int spr, int spd, int tier, int range, bool phys, string trait1, string trait2)
+    public Unit(int maxHp, int str, int mag, int def, int spr, int spd, int tier, int range, bool phys, string trait1, string trait2, int team)
     {
         this.maxHp = maxHp;
         this.currHp = maxHp;
@@ -36,6 +38,7 @@ public class Unit{
         this.phys = phys; //if a unit is a physical unit
         this.trait1 = trait1;
         this.trait2 = trait2;
+        this.team = team;
         //this.traitList = new ArrayList();
         //traitList.Add(trait1);
         //traitList.Add(trait2);
@@ -50,6 +53,7 @@ public class Unit{
     public int getTier() { return this.tier; }
     public int getRange() { return this.range; }
     public bool isPhys() { return this.phys; }
+    public int getTeam() { return this.team; }
 
     //updates the x&y coordinates
     public void updateCoords() {

@@ -17,12 +17,20 @@ public class AI : MonoBehaviour{
     //int y;
     //int nearestx;
     //int nearesty;
-    bool toggle; //toggles if combat is active or not
+    public bool toggle; //toggles if combat is active or not
     private ArrayList unitList = new ArrayList();
     private bool requireTarget;
     private int target;
     private Vector3 closestTarget;
     private int distance;
+    public GameObject self;
+    public GameObject nearestEnemy;
+    public float speed;
+
+    private HexGrid hexGrid;
+    private UnitBench unitBench;
+    Vector3 mousePosition;
+    bool isDragging = false;
 
     //Scan returns true if there is an enemy in range
     bool Scan(int unit){
@@ -57,6 +65,145 @@ public class AI : MonoBehaviour{
         return 0;
     }
 
+    //snap stuff
+    
+
+    private Vector3 GetMousePos()
+    {
+        return Camera.main.WorldToScreenPoint(transform.position);
+    }
+
+    private void OnMouseDown()
+    {
+        mousePosition = Input.mousePosition - GetMousePos();
+        isDragging = true;
+    }
+
+    private void OnMouseDrag()
+    {
+        if (isDragging)
+        {
+            transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition - mousePosition);
+        }
+    }
+
+    private void OnMouseUp()
+    {
+        SnapToHexOrUnitBench();
+
+        isDragging = false;
+    }
+
+    private void SnapToHexOrUnitBench()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit[] hits = Physics.RaycastAll(ray);
+
+        foreach (RaycastHit hit in hits)
+        {
+            hexGrid = hit.collider.GetComponent<HexGrid>();
+            unitBench = hit.collider.GetComponent<UnitBench>();
+
+            if (hexGrid != null)
+            {
+                SnapToHexCenter();
+                return;
+            }
+            else if (unitBench != null)
+            {
+                Debug.Log("Unit bench: " + unitBench);
+                SnapToUnitBench();
+                return;
+            }
+        }
+
+        Debug.Log("Neither hex grid nor unit bench found");
+
+    }
+
+
+    private void SnapToHexCenter()
+    {
+
+        Ray ray = Camera.main.ScreenPointToRay(self.transform.position);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+        {
+            hexGrid = hit.collider.GetComponentInParent<HexGrid>();
+
+            if (hexGrid != null)
+            {
+
+                Vector2 offsetCoordinates = HexMetrics.CoordinateToOffset(hit.point.x, hit.point.z, hexGrid.HexSize, hexGrid.Orientation);
+                offsetCoordinates = HexMetrics.AxialRound(offsetCoordinates);
+
+                Vector3 center = HexMetrics.Center(hexGrid.HexSize, (int)offsetCoordinates.x, (int)offsetCoordinates.y, hexGrid.Orientation);
+
+                if (hexGrid.Orientation == HexOrientation.PointyTop)
+                {
+                    transform.position = new Vector3(center.x, transform.position.y, center.z);
+                }
+                else
+                {
+                    transform.position = center;
+                }
+
+                Debug.Log("Hex Center: " + offsetCoordinates);
+                Debug.Log("Snapped to: " + transform.position);
+            }
+            else
+            {
+                Debug.Log("Hex grid is null");
+            }
+        }
+
+
+
+    }
+
+    private void SnapToUnitBench()
+    {
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+        {
+            unitBench = hit.collider.GetComponentInParent<HexGrid>().GetComponentInChildren<UnitBench>();
+
+            if (unitBench != null)
+            {
+
+                Vector3 benchOrigin = new Vector3(
+                    unitBench.transform.position.x - (unitBench.Width) * unitBench.SquareSize / 2f,
+                    unitBench.transform.position.y,
+                    unitBench.transform.position.z
+                );
+
+                Vector3 localPoint = hit.point;
+                float distanceFromOriginX = localPoint.x - benchOrigin.x;
+                int cellIndex = Mathf.FloorToInt(distanceFromOriginX / unitBench.SquareSize);
+
+                float cellCenterX = benchOrigin.x + (cellIndex + 0.5f) * unitBench.SquareSize;
+                float cellCenterZ = unitBench.transform.position.z;
+                Vector3 cellCenter = new Vector3(cellCenterX, unitBench.transform.position.y, cellCenterZ);
+
+                transform.position = cellCenter;
+                Debug.Log("Snapped to: " + cellCenter);
+            }
+            else
+            {
+                Debug.Log("Unit bench is null");
+            }
+        }
+        else
+        {
+            Debug.Log("Raycast hit nothing");
+        }
+
+    }
+
     void Attack(int unit, int enemy){
         /*if (unitList[unit].isPhys()) {
             unitList[enemy].updateHealth(unitList[unit].getStr() - unitList[enemy].getDef());
@@ -82,18 +229,20 @@ public class AI : MonoBehaviour{
 
     // Update is called once per frame
     void Update(){
-        if(toggle){
-
+        SnapToHexCenter();
+        if (toggle){
+            self.transform.position = Vector3.MoveTowards(self.transform.position, nearestEnemy.transform.position, speed);
+            SnapToHexCenter();
             //AIFunctionality();
 
-            for (int unit = 0; unit < unitList.Count; unit++){
+            /*for (int unit = 0; unit < unitList.Count; unit++){
                 if (Scan(unit)){
                     Attack(unit, getNearest(unit));
                 }
                 else {
                     Move(unit, getNearest(unit));
                 }
-            }
+            }*/
         }
     }
 

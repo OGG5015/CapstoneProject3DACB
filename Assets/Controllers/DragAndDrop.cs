@@ -11,6 +11,7 @@ public class DragAndDrop : MonoBehaviour
     private UnitBench unitBench;
     Vector3 mousePosition;
     bool isDragging = false;
+    Vector3 PrevPos;
 
     private Vector3 GetMousePos()
     {
@@ -55,11 +56,12 @@ public class DragAndDrop : MonoBehaviour
             }
             else if (unitBench != null)
             {
-                Debug.Log("Unit bench: " + unitBench);
                 SnapToUnitBench();
                 return;
             }
         }
+
+        SnapToPrevious();
 
         Debug.Log("Neither hex grid nor unit bench found");
 
@@ -87,10 +89,12 @@ public class DragAndDrop : MonoBehaviour
                 if (hexGrid.Orientation == HexOrientation.PointyTop)
                 {
                     transform.position = new Vector3(center.x, transform.position.y, center.z);
+                    PrevPos = transform.position;
                 }
                 else
                 {
                     transform.position = center;
+                    PrevPos = transform.position;
                 }
 
                 Debug.Log("Hex Center: " + offsetCoordinates);
@@ -108,7 +112,6 @@ public class DragAndDrop : MonoBehaviour
 
     private void SnapToUnitBench()
     {
-
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
@@ -135,6 +138,8 @@ public class DragAndDrop : MonoBehaviour
 
                 transform.position = cellCenter;
                 Debug.Log("Snapped to: " + cellCenter);
+
+                PrevPos = transform.position;
             }
             else
             {
@@ -148,7 +153,14 @@ public class DragAndDrop : MonoBehaviour
         
     }
 
+    private void SnapToPrevious()
+    {
+        transform.position = PrevPos;
+    }
+
 }
+
+
 
 
 

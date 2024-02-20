@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class settingmenu : MonoBehaviour
 {
@@ -10,5 +11,9 @@ public class settingmenu : MonoBehaviour
         Application.Quit();
         Debug.Log("Player has quit the game.");
 
+    }
+    public void game_end()
+    {
+        SceneManager.LoadScene("Game_End");
     }
 }

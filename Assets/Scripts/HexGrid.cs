@@ -28,13 +28,24 @@ public class HexGrid : MonoBehaviour
             {
                 Vector3 centerPosition = HexMetrics.Center(HexSize, x, z, Orientation) + transform.position;
 
-//                GameObject hex = Instantiate(HexPrefab, centerPosition, Quaternion.identity);
- //               hex.transform.SetParent(transform); 
+                GameObject hex = Instantiate(HexPrefab, centerPosition, Quaternion.identity);
+                hex.transform.SetParent(transform);
 
-          //      HexCell hexCell = hex.GetComponent<HexCell>();
-                //hexCell.SetupCell(x, z);
+                //AdjustHexSize(hex);
+
+                HexCell hexCell = hex.GetComponent<HexCell>();
+                hexCell.SetupCell(x, z);
+                //hexCell.SetupCell(x, z, Orientation, HexSize);
+
             }
         }
+    }
+
+    private void AdjustHexSize(GameObject hex)
+    {
+        float scaleFactor = HexSize / HexMetrics.OuterRadius(1f);
+
+        hex.transform.localScale = new Vector3(0, 0, scaleFactor);
     }
 
     private void OnDrawGizmos()

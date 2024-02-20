@@ -6,15 +6,48 @@ using UnityEngine;
 
 public class HexCell: MonoBehaviour
 {
-    [Header("Cell Properties")]
-    [SerializeField] private HexOrientation orientation;
-    [field: SerializeField] public HexGrid Grid { get; set; }
-    [field: SerializeField] public float HexSize { get; set; }
-    //[field:SerializeField] public TerrainType TerrainType { get; set; }
-    [field: SerializeField] public Vector2 OffsetCoordinates { get; set; }
-    [field: SerializeField] public Vector3 CubeCoordinates { get; set; }
-    [field: SerializeField] public Vector2 AxialCoordinates { get; set; }
-    [field: NonSerialized] public List<HexCell> Neighbors { get; private set; }
+    public void SetupCell(int x, int z)
+    {
+        
+        float rotationAngle = 90f;
+        //transform.Rotate(Vector3.up, rotationAngle);
+        transform.Rotate(Vector2.up, rotationAngle);
+    }
 
-    [field: SerializeField] private Transform terrain { get; /*private*/ set; }
+    public void SetupCell(int x, int z, HexOrientation orientation)
+    {
+
+        Quaternion rotation = Quaternion.identity;
+        switch (orientation)
+        {
+            case HexOrientation.FlatTop:
+                rotation = Quaternion.Euler(30f, 0f, 0f);
+                break;
+            case HexOrientation.PointyTop:
+                rotation = Quaternion.Euler(0f, 0f, 90f);
+                break;
+        }
+
+        transform.rotation = rotation;
+    }
+
+    public void SetupCell(int x, int z, HexOrientation orientation, float hexSize)
+    {
+        Quaternion rotation = Quaternion.identity;
+        switch (orientation)
+        {
+            case HexOrientation.FlatTop:
+                rotation = Quaternion.Euler(30f, 0f, 0f);
+                break;
+            case HexOrientation.PointyTop:
+                rotation = Quaternion.Euler(0f, 0f, 90f);
+                break;
+        }
+
+        transform.rotation = rotation;
+
+        //float size = hexSize/30;
+
+        //transform.lossyScale = new Vector3(size, size, size);
+    }
 }

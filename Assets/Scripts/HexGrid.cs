@@ -13,7 +13,8 @@ public class HexGrid : MonoBehaviour
     [field: SerializeField] public int Width { get; private set; }
     [field: SerializeField] public int Height { get; private set; }
     [field: SerializeField] public float HexSize { get; private set; }
-    [field: SerializeField] public GameObject HexPrefab { get; private set; }
+    [field: SerializeField] public GameObject HexPrefabT1 { get; private set; }
+    [field: SerializeField] public GameObject HexPrefabT2 { get; private set; }
 
     private void Start()
     {
@@ -26,17 +27,37 @@ public class HexGrid : MonoBehaviour
         {
             for (int x = 0; x < Width; x++)
             {
-                Vector3 centerPosition = HexMetrics.Center(HexSize, x, z, Orientation) + transform.position;
-
-                GameObject hex = Instantiate(HexPrefab, centerPosition, Quaternion.identity);
+                /*Vector3 centerPosition = HexMetrics.Center(HexSize, x, z, Orientation) + transform.position;
+                GameObject hex = Instantiate(HexPrefabT1, centerPosition, Quaternion.identity);
                 hex.transform.SetParent(transform);
+
+                hex.transform.localScale = Vector3.one * (HexSize/2f);
 
                 //AdjustHexSize(hex);
 
                 HexCell hexCell = hex.GetComponent<HexCell>();
                 hexCell.SetupCell(x, z);
-                //hexCell.SetupCell(x, z, Orientation, HexSize);
+                //hexCell.SetupCell(x, z, Orientation, HexSize);*/
 
+
+                Vector3 centerPosition = HexMetrics.Center(HexSize, x, z, Orientation) + transform.position;
+                GameObject hex;
+
+                if (z < Height / 2) // Top half
+                {
+                    
+                    hex = Instantiate(HexPrefabT1, centerPosition, Quaternion.identity);
+                }
+                else // Bottom half
+                {
+                    hex = Instantiate(HexPrefabT2, centerPosition, Quaternion.identity);
+                }
+
+                hex.transform.SetParent(transform);
+                hex.transform.localScale = Vector3.one * (HexSize / 2f);
+
+                HexCell hexCell = hex.GetComponent<HexCell>();
+                hexCell.SetupCell(x, z);
             }
         }
     }

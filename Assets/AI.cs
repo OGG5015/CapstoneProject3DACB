@@ -17,7 +17,24 @@ public class AI : MonoBehaviour{
     //int y;
     //int nearestx;
     //int nearesty;
-    public bool toggle; //toggles if combat is active or not
+
+    public static int maxHp = 40;
+    private int currHp = maxHp;
+    public int str = 15;
+    public int mag = 15;
+    public int def = 10;
+    public int spr = 10;
+    public int spd = 10;
+    public int tier = 1;
+    public int range = 1;
+    public bool phys = true;
+    private string trait1;
+    private string trait2;
+    public int team = 1;
+    public bool sFight = false;
+
+    public bool combat = false; //toggles if combat is active or not
+    public bool move = true; //toggles if unit should move or not
     private ArrayList unitList = new ArrayList();
     private bool requireTarget;
     private int target;
@@ -94,6 +111,10 @@ public class AI : MonoBehaviour{
         isDragging = false;
     }
 
+    public void setHp(int dmg) {
+        currHp -= dmg;
+    }
+
     private void SnapToHexOrUnitBench()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -121,6 +142,23 @@ public class AI : MonoBehaviour{
 
     }
 
+    public void fight() {
+        if (phys){
+            nearestEnemy.GetComponent<AI>().setHp(str - nearestEnemy.GetComponent<AI>().def);
+        }
+        else{
+            nearestEnemy.GetComponent<AI>().setHp(mag - nearestEnemy.GetComponent<AI>().spr);
+        }
+    }
+
+    void OnTriggerEnter(Collider col)
+    {//need to tag objects with teamA or teamB
+        if (GetComponent<Collider>().CompareTag("teamB"))
+        {
+            move = false;
+            sFight = true;
+        }
+    }
 
     private void SnapToHexCenter()
     {
@@ -204,15 +242,6 @@ public class AI : MonoBehaviour{
 
     }
 
-    void Attack(int unit, int enemy){
-        /*if (unitList[unit].isPhys()) {
-            unitList[enemy].updateHealth(unitList[unit].getStr() - unitList[enemy].getDef());
-        }
-        else{
-            unitList[enemy].updateHealth(unitList[unit].getMag() - unitList[enemy].getSpr());
-        }*/
-    }
-
     //Move moves the unit to an adjacent tile, updating x & y as well
     void Move(int unit, int enemy){ 
         
@@ -223,27 +252,39 @@ public class AI : MonoBehaviour{
         
     }
 
-    void toggleToggle() {
-        toggle = !toggle;
+    void toggleCombat() {
+        combat = !combat;
     }
 
     // Update is called once per frame
     void Update(){
         SnapToHexCenter();
-        if (toggle){
+
+        if (combat){
+            if (move) {
+                self.transform.position = Vector3.MoveTowards(self.transform.position, nearestEnemy.transform.position, speed);
+            }
+        }
+        
+        /*
+        SnapToHexCenter();
+        if (combat){
             self.transform.position = Vector3.MoveTowards(self.transform.position, nearestEnemy.transform.position, speed);
             SnapToHexCenter();
             //AIFunctionality();
 
-            /*for (int unit = 0; unit < unitList.Count; unit++){
+            for (int unit = 0; unit < unitList.Count; unit++){
                 if (Scan(unit)){
                     Attack(unit, getNearest(unit));
                 }
                 else {
                     Move(unit, getNearest(unit));
                 }
-            }*/
+            }
         }
+        */
+
+
     }
 
     //nearestInRange returns true if nearest enemy unit is within range
@@ -265,7 +306,7 @@ public class AI : MonoBehaviour{
         //float distance = Vector3.Distance(transform.position, target.position);
 
         if (requireTarget){
-            Attack(unit, target);
+            fight();
         }
         /*else if (nearestInRange()){
             if (!toggle){

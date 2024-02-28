@@ -5,8 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
 public class UnitBenchMeshGenerator : MonoBehaviour
 {
-    [field: SerializeField] public LayerMask gridLayer { get; private set; }
-    [field: SerializeField] public UnitBench unitBench { get; private set; }
+    [field: SerializeField] public LayerMask gridLayer {get; private set; }
+    [field: SerializeField] public UnitBench unitBench {get; private set; }
     public Transform explosionTest;
 
     private void Awake()
@@ -23,13 +23,13 @@ public class UnitBenchMeshGenerator : MonoBehaviour
     private void OnEnable()
     {
         MouseController.instance.OnLeftMouseClick += OnLeftMouseClick;
-        //MouseController.instance.OnRightMouseClick += OnRightMouseClick;
+        MouseController.instance.OnRightMouseClick += OnRightMouseClick;
     }
 
     private void OnDisable()
     {
         MouseController.instance.OnLeftMouseClick -= OnLeftMouseClick;
-        //MouseController.instance.OnRightMouseClick -= OnRightMouseClick;
+        MouseController.instance.OnRightMouseClick -= OnRightMouseClick;
     }
 
     public void CreateUnitBenchMesh()
@@ -41,20 +41,22 @@ public class UnitBenchMeshGenerator : MonoBehaviour
     {
         this.unitBench = unitBench;
         this.gridLayer = layerMask;
+        //CreateUnitBenchMesh(unitBench.GetNumberOfSquares(), unitBench.GetSquareSize(), gridLayer);
         CreateUnitBenchMesh(unitBench.Width, unitBench.SquareSize, gridLayer);
     }
 
     public void CreateUnitBenchMesh(int Width, float SquareSize, LayerMask layerMask)
     {
         ClearUnitBenchMesh();
-        Vector3[] vertices = new Vector3[4 * (Width + 1)];
+        Vector3[] vertices = new Vector3[4 * Width];
 
-        float halfWidth = (Width - 1) * SquareSize / (2f);
-        float halfSquareSize = SquareSize / 2f;
-
-        for (int i = 0; i <= Width; i++)
+        for (int i = 0; i < Width; i++)
         {
-            float xPos = unitBench.transform.position.x + i * SquareSize - halfWidth + halfSquareSize;
+            /*float xPos = i * SquareSize;
+            float yPos = 0f;
+            float zPos = 0f;*/
+
+            float xPos = unitBench.transform.position.x + i * SquareSize;
             float yPos = unitBench.transform.position.y;
             float zPos = unitBench.transform.position.z;
 
@@ -64,10 +66,9 @@ public class UnitBenchMeshGenerator : MonoBehaviour
             vertices[i * 4 + 3] = new Vector3(xPos, yPos, zPos + SquareSize);
         }
 
+        int[] triangles = new int[6 * (Width - 1)];
 
-        int[] triangles = new int[6 * Width];
-
-        for (int i = 0; i < Width; i++)
+        for (int i = 0; i < Width - 1; i++)
         {
             triangles[i * 6] = i * 4;
             triangles[i * 6 + 1] = i * 4 + 1;
@@ -121,21 +122,16 @@ public class UnitBenchMeshGenerator : MonoBehaviour
 
     private void OnLeftMouseClick(RaycastHit hit)
     {
-        Vector3 benchOrigin = new Vector3(
-            unitBench.transform.position.x - (unitBench.Width /* - 1 */) * unitBench.SquareSize / 2f,
-            unitBench.transform.position.y,
-            unitBench.transform.position.z
-        );
-
-        Vector3 localPoint = transform.InverseTransformPoint(hit.point);
-        float distanceFromOriginX = localPoint.x - benchOrigin.x;
-        int cellIndex = Mathf.FloorToInt(distanceFromOriginX / unitBench.SquareSize);
-        Debug.Log("Clicked on unit bench cell " + cellIndex);
-
-        float cellCenterX = benchOrigin.x + (cellIndex + /*0.5f*/ 1f) * unitBench.SquareSize;
-        float cellCenterZ = unitBench.transform.position.z;
-        Vector3 cellCenter = new Vector3(cellCenterX, unitBench.transform.position.y, cellCenterZ);
-        Debug.Log("Center of the clicked cell: " + cellCenter);
+        Debug.Log("Hit object: " + hit.transform.name + " at position " + hit.point);
     }
 
+    private void OnRightMouseClick(RaycastHit hit)
+    {
+        float localX = hit.point.x - hit.transform.position.x;
+        float localZ = hit.point.z - hit.transform.position.z;
+
+        Vector2 location = HexMetrics.CoordinateToOffset(localX, localZ, unitBench.SquareSize, HexOrientation.FlatTop);
+        Debug.Log("Right Clicked on Square: " + location);
+        Instantiate(explosionTest, hit.point, Quaternion.identity);
+    }
 }

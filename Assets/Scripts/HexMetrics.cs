@@ -203,6 +203,14 @@ public static class HexMetrics
         }
     }
 
+    /*public static Vector3 AxialToCube(Vector2 axial)
+    {
+        float x = axial.x;
+        float z = axial.y;
+        float y = -x - z;
+        return new Vector3(x, z, y);
+    }*/
+
     public static Vector3 AxialToCube(float q, float r)
     {
         return new Vector3(q, r, -q -r);
@@ -218,6 +226,20 @@ public static class HexMetrics
         return AxialToCube(axialCoord.x, axialCoord.y);
     }
 
+    /*public static Vector2 OffsetToAxialFlat(int col, int row)
+    {
+        int q = col;
+        int r = row - (col + (col & 1)) / 2;
+        return new Vector2(q, r);
+    }
+
+    public static Vector2 OffsetToAxialPointy(int col, int row)
+    {
+        int q = col - (row + (row & 1)) / 2;
+        int r = row;
+        return new Vector2(q, r);
+    }*/
+
     public static Vector2 OffsetToAxialFlat(int col, int row)
     {
         int q = col;
@@ -231,6 +253,24 @@ public static class HexMetrics
         int r = row;
         return new Vector2(q, r);
     }
+
+    /*public static Vector2 CoordinateToOffset(float x, float z, float hexSize, HexOrientation orientation)
+    {
+        if (orientation == HexOrientation.PointyTop)
+        {
+            float col = x / (InnerRadius(hexSize) * 2f);
+            float row = (z / (InnerRadius(hexSize) * 2f) - col) / Mathf.Sqrt(3f) * 2f;
+            return new Vector2(col, row);
+        }
+        else
+        {
+            float col = x / (OuterRadius(hexSize) * 1.5f);
+            float row = (z / (InnerRadius(hexSize) * 2f) - (col / 2f)) / Mathf.Sqrt(3f);
+            return new Vector2(col, row);
+        }
+    }*/
+
+
 }
 
 

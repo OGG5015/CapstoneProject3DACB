@@ -10,11 +10,13 @@ public class HexGridMeshGenerator : MonoBehaviour
     [field: SerializeField] public HexGrid hexGrid { get; private set; }
     public Transform explosionTest;
 
-
     private void Awake()
     {
         hexGrid = GetComponentInParent<HexGrid>();
-        
+        /*if(hexGrid == null)
+        {
+            hexGrid = GetComponentInParent<HexGrid>();
+        }*/
         if (hexGrid == null)
         {
             Debug.LogError("HexGridMeshGenerator count not find a HexGrid component in its parent or itself");
@@ -23,14 +25,22 @@ public class HexGridMeshGenerator : MonoBehaviour
 
     private void OnEnable()
     {
+        /*MouseController.instance.OnLeftMouseClick += OnLeftMouseClick;
+        MouseController.instance.OnRightMouseClick += OnRightMouseClick;*/
+
         MouseController.instance.OnLeftMouseClick += OnLeftMouseClick;
         MouseController.instance.OnRightMouseClick += OnRightMouseClick;
+
     }
 
     private void OnDisable()
     {
+        /*MouseController.instance.OnLeftMouseClick -= OnLeftMouseClick;
+        MouseController.instance.OnRightMouseClick -= OnRightMouseClick;*/
+
         MouseController.instance.OnLeftMouseClick -= OnLeftMouseClick;
         MouseController.instance.OnRightMouseClick -= OnRightMouseClick;
+
     }
 
     public void CreateHexMesh()
@@ -127,8 +137,6 @@ public class HexGridMeshGenerator : MonoBehaviour
     private void OnLeftMouseClick(RaycastHit hit)
     {
         Debug.Log("Hit object: " + hit.transform.name + " at position " + hit.point);
-
-        
         float localX = hit.point.x - hit.transform.position.x;
         float localZ = hit.point.z - hit.transform.position.z;
 

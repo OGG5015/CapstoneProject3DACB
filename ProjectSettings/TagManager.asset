@@ -5,8 +5,6 @@ TagManager:
   serializedVersion: 2
   tags:
   - HexCell
-  - GameObject
-  - UnitBench
   layers:
   - Default
   - TransparentFX

@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: d4e4b68992f69e64fa87f7058295c7f1
+=======
+guid: fea00106f35f40945abde8da95a5d42c
+>>>>>>> parent of 58f1ea45 (changed scene from game view to game_view  due to merging difficulties)
 DefaultImporter:
   externalObjects: {}
   userData: 

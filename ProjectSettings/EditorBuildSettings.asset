@@ -9,7 +9,10 @@ EditorBuildSettings:
     path: Assets/Scenes/main_menu.unity
     guid: e3b666691ca62d64c9263d90fd568c02
   - enabled: 1
-    path: Assets/Scenes/bifsudnsidf.unity
+    path: Assets/Scenes/Game View.unity
+    guid: d4e4b68992f69e64fa87f7058295c7f1
+  - enabled: 0
+    path: Assets/Scenes/Game_View.unity
     guid: fea00106f35f40945abde8da95a5d42c
   - enabled: 1
     path: Assets/Scenes/Don'tDestroyOnLoad.unity

@@ -12,8 +12,6 @@ public class settingmenu : MonoBehaviour
         Debug.Log("Player has quit the game.");
 
     }
-    public void game_end()
-    {
-        SceneManager.LoadScene("Game_End");
-    }
+   
+
 }

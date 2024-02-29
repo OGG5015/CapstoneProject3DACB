@@ -12,8 +12,15 @@ public class endgame : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    public void restart()
     {
-        
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        print("Button works");
+    }
+
+    public void Quit()
+    {
+        Application.Quit();
+        Debug.Log("Player has quit the game.");
     }
 }

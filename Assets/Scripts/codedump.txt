@@ -27,3 +27,85 @@
             }
         }
     }*/
+
+
+    /*Vector3[] vertices = new Vector3[4 * (Width + 1)];
+
+        float halfWidth = (Width - 1) * SquareSize / 2f;
+        float halfSquareSize = SquareSize / 2f;
+
+
+        Vector3 benchCenter = unitBench.transform.position/ Width;
+
+
+        for (int i = 0; i <= Width; i++)
+        {
+            //float xPos = unitBench.transform.position.x + i * SquareSize - halfWidth + halfSquareSize;
+            //float yPos = unitBench.transform.position.y;
+            //float zPos = unitBench.transform.position.z;
+            float xPos = benchCenter.x - halfWidth + i * SquareSize;
+            float yPos = benchCenter.y;
+            float zPos = benchCenter.z;
+
+            vertices[i * 4] = new Vector3(xPos, yPos, zPos);
+            vertices[i * 4 + 1] = new Vector3(xPos + SquareSize, yPos, zPos);
+            vertices[i * 4 + 2] = new Vector3(xPos + SquareSize, yPos, zPos + SquareSize);
+            vertices[i * 4 + 3] = new Vector3(xPos, yPos, zPos + SquareSize);
+
+        }
+
+        int[] triangles = new int[6 * Width];
+
+        for (int i = 0; i < Width; i++)
+        {
+            triangles[i * 6] = i * 4;
+            triangles[i * 6 + 1] = i * 4 + 1;
+            triangles[i * 6 + 2] = i * 4 + 2;
+            triangles[i * 6 + 3] = i * 4;
+            triangles[i * 6 + 4] = i * 4 + 2;
+            triangles[i * 6 + 5] = i * 4 + 3;
+        }
+
+        Mesh UBmesh = new Mesh();
+        UBmesh.name = "Unit Bench Mesh";
+        UBmesh.vertices = vertices;
+        UBmesh.triangles = triangles;
+        UBmesh.RecalculateNormals();
+        UBmesh.RecalculateBounds();
+        UBmesh.Optimize();
+        UBmesh.RecalculateUVDistributionMetrics();
+
+        GetComponent<MeshFilter>().sharedMesh = UBmesh;
+        GetComponent<MeshCollider>().sharedMesh = UBmesh;
+
+        int gridLayerIndex = GetLayerIndex(layerMask);
+        Debug.Log("Layer Index: " + gridLayerIndex);
+
+        gameObject.layer = gridLayerIndex;*/
+
+        /*for (int x = 0; x < Width; x++)
+        {
+            triangles[0] = 0;
+            triangles[1] = Width + 1;
+            triangles[2] = 1;
+            triangles[3] = 1;
+            triangles[4] = Width + 1;
+            triangles[5] = Width + 2;
+
+        }*/
+
+        /*for (int ti = 0, vi = 0, x = 0; x < Width; x++, ti += 6, vi++) {
+			triangles[ti] = vi;
+			triangles[ti + 3] = triangles[ti + 2] = vi + 1;
+			triangles[ti + 4] = triangles[ti + 1] = vi + Width + 1;
+			triangles[ti + 5] = vi + Width + 2;
+			
+		}*/
+
+        /*for (int ti = 0, vi = 0, x = 0; x < Width; x++, ti += 6, vi++)
+        {
+            triangles[ti] = vi;
+            triangles[ti + 3] = triangles[ti + 2] = vi + 1;
+            triangles[ti + 4] = triangles[ti + 1] = vi + Width + 1;
+            triangles[ti + 5] = vi + Width + 2;
+        }*/

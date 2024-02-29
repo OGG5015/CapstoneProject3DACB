@@ -109,3 +109,15 @@
             triangles[ti + 4] = triangles[ti + 1] = vi + Width + 1;
             triangles[ti + 5] = vi + Width + 2;
         }*/
+
+        /*Vector3 centerPosition = HexMetrics.Center(HexSize, x, z, Orientation) + transform.position;
+                GameObject hex = Instantiate(HexPrefabT1, centerPosition, Quaternion.identity);
+                hex.transform.SetParent(transform);
+
+                hex.transform.localScale = Vector3.one * (HexSize/2f);
+
+                //AdjustHexSize(hex);
+
+                HexCell hexCell = hex.GetComponent<HexCell>();
+                hexCell.SetupCell(x, z);
+                //hexCell.SetupCell(x, z, Orientation, HexSize);*/

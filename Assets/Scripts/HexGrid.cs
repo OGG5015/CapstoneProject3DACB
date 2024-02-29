@@ -27,19 +27,6 @@ public class HexGrid : MonoBehaviour
         {
             for (int x = 0; x < Width; x++)
             {
-                /*Vector3 centerPosition = HexMetrics.Center(HexSize, x, z, Orientation) + transform.position;
-                GameObject hex = Instantiate(HexPrefabT1, centerPosition, Quaternion.identity);
-                hex.transform.SetParent(transform);
-
-                hex.transform.localScale = Vector3.one * (HexSize/2f);
-
-                //AdjustHexSize(hex);
-
-                HexCell hexCell = hex.GetComponent<HexCell>();
-                hexCell.SetupCell(x, z);
-                //hexCell.SetupCell(x, z, Orientation, HexSize);*/
-
-
                 Vector3 centerPosition = HexMetrics.Center(HexSize, x, z, Orientation) + transform.position;
                 GameObject hex;
 

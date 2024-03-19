@@ -26,23 +26,26 @@ public class AI : MonoBehaviour{
     public int spr = 10;
     public int spd = 10;
     public int tier = 1;
-    public int range = 1;
+    public float range = 1.0f;
     public bool phys = true;
     private string trait1;
     private string trait2;
     public int team = 1;
     public bool sFight = false;
 
-    public bool combat = false; //toggles if combat is active or not
+    public bool combat = true; //toggles if combat is active or not
     public bool move = true; //toggles if unit should move or not
     private ArrayList unitList = new ArrayList();
     private bool requireTarget;
-    private int target;
     private Vector3 closestTarget;
     private int distance;
-    public GameObject self;
+    
     public GameObject nearestEnemy;
     public float speed;
+
+    private float size;
+
+    private Vector3 target;
 
     private HexGrid hexGrid;
     private UnitBench unitBench;
@@ -163,7 +166,7 @@ public class AI : MonoBehaviour{
     private void SnapToHexCenter()
     {
 
-        Ray ray = Camera.main.ScreenPointToRay(self.transform.position);
+        Ray ray = Camera.main.ScreenPointToRay(gameObject.transform.position);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, Mathf.Infinity))
@@ -249,21 +252,94 @@ public class AI : MonoBehaviour{
 
     // Start is called before the first frame update
     void Start(){
-        
+        target = gameObject.transform.position;
+
+
+
+        //size = GameObject.Find("/Grid").GetComponent();
+        size = 5f;
     }
 
     void toggleCombat() {
         combat = !combat;
     }
 
+    bool inRange() {
+        if ((gameObject.transform.position - nearestEnemy.transform.position).sqrMagnitude <= (20f * range)) 
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     // Update is called once per frame
     void Update(){
-        SnapToHexCenter();
+        //SnapToHexCenter();
 
         if (combat){
-            if (move) {
-                self.transform.position = Vector3.MoveTowards(self.transform.position, nearestEnemy.transform.position, speed);
+            if (((gameObject.transform.position - target).sqrMagnitude <= 4f) && !inRange()) {
+                move = false;
+
+                //x is greater
+                if (gameObject.transform.position.x > nearestEnemy.transform.position.x)
+                {
+                    //unit is to upper right of target or on same y, move lower left
+                    if (gameObject.transform.position.z >= nearestEnemy.transform.position.z)
+                    {
+                        target.z = target.z - 5f;
+                        target.x = target.x - 8f;
+                    }
+                    //unit is to lower right to target, move upper left
+                    else if (gameObject.transform.position.z < nearestEnemy.transform.position.z)
+                    {
+                        target.z = target.z + 5f;
+                        target.x = target.x - 8f;
+                    }
+                }
+                //x is less
+                else if (gameObject.transform.position.x < nearestEnemy.transform.position.x)
+                {
+                    //unit is to upper left of target, move lower right
+                    if (gameObject.transform.position.z > nearestEnemy.transform.position.z)
+                    {
+                        target.y = target.y - 5f;
+                        target.x = target.x + 8f;
+                    }
+                    //unit is to lower left of target or same y, move upper right
+                    else if (gameObject.transform.position.z <= nearestEnemy.transform.position.z)
+                    {
+                        target.z = target.z + 5f;
+                        target.x = target.x + 8f;
+                    }
+                }
+                //x is equal
+                else 
+                {
+                    //unit is above target, move down
+                    if (gameObject.transform.position.z > nearestEnemy.transform.position.z)
+                    {
+                        target.z = target.z - 10f;
+                    }
+                    //unit is below target, move up
+                    else if (gameObject.transform.position.z < nearestEnemy.transform.position.z)
+                    {
+                        target.z = target.z + 10f;
+                    }
+                }
+
+                if(!inRange()){move = true;}
             }
+
+            if (move) 
+            {
+                gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, target, speed);
+            }
+
+            /*if (move) {
+
+                self.transform.position = Vector3.MoveTowards(self.transform.position, nearestEnemy.transform.position, speed);
+            }*/
         }
         
         /*

@@ -10,4 +10,9 @@ public class refresh : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         print("Button works");
     }
+
+    public void Back()
+    {
+        SceneManager.LoadScene("Game_Options");
+    }
 }

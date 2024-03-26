@@ -19,7 +19,7 @@ public class AI : MonoBehaviour{
     //int nearesty;
 
     public static int maxHp = 40;
-    private int currHp = maxHp;
+    public int currHp = maxHp;
     public int str = 15;
     public int mag = 15;
     public int def = 10;
@@ -43,7 +43,7 @@ public class AI : MonoBehaviour{
     public GameObject nearestEnemy;
     public float speed;
 
-    private float size;
+    //private float size;
 
     private Vector3 target;
 
@@ -257,7 +257,7 @@ public class AI : MonoBehaviour{
 
 
         //size = GameObject.Find("/Grid").GetComponent();
-        size = 5f;
+        //size = 5f;
     }
 
     void toggleCombat() {
@@ -277,7 +277,12 @@ public class AI : MonoBehaviour{
     void Update(){
         //SnapToHexCenter();
 
-        if (combat){
+        if(currHp <= 0)
+        {
+            Destroy(gameObject);
+        }
+
+        if (combat  && nearestEnemy != null){
             if (((gameObject.transform.position - target).sqrMagnitude <= 4f) && !inRange()) {
                 move = false;
 
@@ -329,7 +334,14 @@ public class AI : MonoBehaviour{
                 }
 
                 if(!inRange()){move = true;}
+
+                
             }
+            
+            if (inRange())
+                {
+                    fight();
+                }
 
             if (move) 
             {

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -7,9 +5,23 @@ public class PlayerNetwork : NetworkBehaviour
 {
     private NetworkVariable<int> randomNumber = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
+    /*private Camera _mainCamera;
+
+    private void Initialize()
+    {
+        _mainCamera = Camera.main;
+
+    }*/
+
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        //Initialize();
+    }
+
     private void Update()
     {
-        Debug.Log(OwnerClientId + "; randomNumber" + randomNumber.Value);
+        //Debug.Log(OwnerClientId + "; randomNumber" + randomNumber.Value);
         if(!IsOwner) return;
         
         if(Input.GetKeyDown(KeyCode.T))

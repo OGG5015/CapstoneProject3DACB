@@ -42,7 +42,7 @@ public class AuthManager : MonoBehaviour
         await SignUpWithUsernamePassword(newUserUsername, newUserPassword);
     }
 
-    public async void SignOut()
+    public void SignOut()
     {
         AuthenticationService.Instance.SignOut();
         logTxt.text = "Logged out";
@@ -83,7 +83,7 @@ public class AuthManager : MonoBehaviour
 
             if(AuthenticationService.Instance.PlayerName == null)
             {
-                await AuthenticationService.Instance.UpdatePlayerNameAsync(username);
+                _ = AuthenticationService.Instance.UpdatePlayerNameAsync(username);
                 Debug.Log("Player name updated -> " + AuthenticationService.Instance.PlayerName);
             }
         }

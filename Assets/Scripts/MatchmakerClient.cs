@@ -131,7 +131,7 @@ public class MatchmakerClient : MonoBehaviour
                 multiplayAssignment = ticketStatus.Value as MultiplayAssignment;
                 
             }
-            switch (multiplayAssignment.Status)
+            switch (multiplayAssignment?.Status)
             {
                 
                 case StatusOptions.Found:
@@ -164,6 +164,8 @@ public class MatchmakerClient : MonoBehaviour
         Debug.Log($"Ticket Assigned: {assignment.Ip}:{assignment.Port}");
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(assignment.Ip, (ushort)assignment.Port);
         NetworkManager.Singleton.StartClient();
+        //MatchmakerService.Instance.DeleteTicketAsync(assignment.ToString());
+        //Debug.Log("Deleted the ticket");
         
         
         /*var instance = Instantiate(PrefabToSpawn);
@@ -174,7 +176,7 @@ public class MatchmakerClient : MonoBehaviour
 
         //UnityEngine.SceneManagement.SceneManager.LoadScene("Game View");
 
-        OnTicketAssigned();
+        //OnTicketAssigned();
         //SceneManager.LoadScene("Game View");
 
     }

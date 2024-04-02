@@ -32,6 +32,8 @@ public class ServerStartUp : MonoBehaviour
     private IServerEvents _serverEvents;
     private bool _backfilling = false;
     MatchmakingResults payload;
+    
+    
 
     private IMultiplayService _multiplayService;
     //private int 
@@ -58,17 +60,17 @@ public class ServerStartUp : MonoBehaviour
         }
 
         
-        /*if (server)
+        if (server)
         {
             Debug.Log("Server detected");
             StartServer();
-            await StartServerServices();
+            await StartServerServices(); 
         }
         else
-        {*/
+        {
             Debug.Log("Client detected");
             ClientInstance?.Invoke();
-        /*}*/
+        }
         
         
     }
@@ -78,7 +80,7 @@ public class ServerStartUp : MonoBehaviour
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(InternalServerIP, _serverPort);
         NetworkManager.Singleton.StartServer();
         NetworkManager.Singleton.OnClientDisconnectCallback += ClientDisconnected;
-
+        Debug.Log($"Connected clients: {NetworkManager.Singleton.ConnectedClients.Count}.\nMax players: {ConnectionApprovalHandler.MaxPlayers}");
     }
 
     async Task StartServerServices()
@@ -187,6 +189,7 @@ public class ServerStartUp : MonoBehaviour
         {
             Debug.LogWarning(message: $"Something went wrong trying to get the MatchmakerPayload in GetMatchmakerAllocationPayloadAsync:\n {ex}");
         }
+        
         return null;
     }
 
@@ -214,11 +217,10 @@ public class ServerStartUp : MonoBehaviour
 
             _createBackfillTicketOptions = new CreateBackfillTicketOptions
             {
-                Connection = _externalConnectionString,
                 QueueName = payload.QueueName,
+                Connection = _externalConnectionString,
                 Properties = new BackfillTicketProperties(matchProperties)
             };
-
 
             _localBackfillTicket.Id = await MatchmakerService.Instance.CreateBackfillTicketAsync(_createBackfillTicketOptions);
             Debug.Log("_localBackfillTicket.id:" + _localBackfillTicket);
@@ -251,6 +253,7 @@ public class ServerStartUp : MonoBehaviour
 
     private async void ClientDisconnected(ulong clientId)
     {
+
         
         if (!_backfilling && NetworkManager.Singleton.ConnectedClients.Count > 0 && NeedsPlayers())
         {
@@ -260,8 +263,21 @@ public class ServerStartUp : MonoBehaviour
 
     private bool NeedsPlayers()
     { // change to < 4 for actual game ---- is set to 1 for testing purposes
-        return NetworkManager.Singleton.ConnectedClients.Count < ConnectionApprovalHandler.MaxPlayers;
+        //return NetworkManager.Singleton.ConnectedClients.Count < ConnectionApprovalHandler.MaxPlayers;
+        
+        if(NetworkManager.Singleton.ConnectedClients.Count < ConnectionApprovalHandler.MaxPlayers)
+        {
+            
+            return true;
+        }
+        else
+        {
+            Debug.Log("This game does not need players.");
+            return false;
+        }
     }
+
+
 
     private void Dispose()
     {

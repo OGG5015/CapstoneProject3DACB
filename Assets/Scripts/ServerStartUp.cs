@@ -7,22 +7,21 @@ using Unity.Services.Core;
 using UnityEngine;
 using Unity.Services.Multiplay;
 using Unity.Services.Matchmaker.Models;
-using TMPro;
 using Newtonsoft.Json;
 using Unity.Services.Matchmaker;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using System.Runtime.CompilerServices;
-using UnityEngine.SceneManagement;
+//using Matchplay.Server;
 
 public class ServerStartUp : MonoBehaviour
 {
     public static event System.Action ClientInstance;
-    private string InternalServerIP = "0.0.0.0";
+    private const string InternalServerIP = "0.0.0.0";
     private string _externalServerIP = "0.0.0.0";
     private ushort _serverPort = 7777;
     private string _externalConnectionString => $"{_externalServerIP}:{_serverPort}";
-    const int _multiplayServiceTimeout = 2000;
+    const int _multiplayServiceTimeout = 20000;
     private string _allocationId;
     private BackfillTicket _localBackfillTicket;
     CreateBackfillTicketOptions _createBackfillTicketOptions;
@@ -31,7 +30,7 @@ public class ServerStartUp : MonoBehaviour
     private MultiplayEventCallbacks _serverCallbacks;
     private IServerEvents _serverEvents;
     private bool _backfilling = false;
-    MatchmakingResults payload;
+    //MatchmakingResults payload;
     
     
 
@@ -59,21 +58,29 @@ public class ServerStartUp : MonoBehaviour
             }
         }
 
-        
+        //
         if (server)
         {
+            //#if dedicatedServer
             Debug.Log("Server detected");
             StartServer();
             await StartServerServices(); 
+            //#endif
         }
         else
         {
             Debug.Log("Client detected");
+            
+            
             ClientInstance?.Invoke();
+
+
         }
+        //
         
         
     }
+
 
     private void StartServer()
     {
@@ -93,7 +100,7 @@ public class ServerStartUp : MonoBehaviour
         }
         catch (Exception ex)
         {
-            Debug.LogWarning(message: $"Something went wrong trying to set up the SQP service:\n {ex}");
+            Debug.LogWarning($"Something went wrong trying to set up the SQP service:\n {ex}");
         }
 
         try
@@ -104,8 +111,8 @@ public class ServerStartUp : MonoBehaviour
             Makes it so that a player can join a game even if it's full */
             if (_matchmakingPayload != null)
             {
-                Debug.Log($"Got paylod: {_matchmakingPayload}");
-                await StartBackfill(/*_matchmakingPayload*/);
+                Debug.Log($"Got payload: {_matchmakingPayload}");
+                await StartBackfill(_matchmakingPayload);
             }
             else
             {
@@ -193,7 +200,7 @@ public class ServerStartUp : MonoBehaviour
         return null;
     }
 
-    private async Task StartBackfill()
+    private async Task StartBackfill(MatchmakingResults payload)
     {
         var backfillProperties = new BackfillTicketProperties(payload.MatchProperties);
         _localBackfillTicket = new BackfillTicket { Id = payload.MatchProperties.BackfillTicketId, Properties = backfillProperties };
@@ -209,9 +216,12 @@ public class ServerStartUp : MonoBehaviour
         {
             Debug.Log("Already backfilling, no need to start another");
         }
+        
+        //MatchplayBackfiller backfiller = new MatchplayBackfiller(_externalConnectionString,"ACBMultiplayerMode",  matchProperties,  10);
+        //await backfiller.BeginBackfilling();
 
 
-        Debug.LogWarning($"Starting backfill Server: {NetworkManager.Singleton.LocalClient}/{4}");
+        Debug.Log($"Starting backfill Server: {NetworkManager.Singleton.LocalClient}/{4}");
         if (string.IsNullOrEmpty(_localBackfillTicket.Id))
         {
 
@@ -221,7 +231,7 @@ public class ServerStartUp : MonoBehaviour
                 Connection = _externalConnectionString,
                 Properties = new BackfillTicketProperties(matchProperties)
             };
-
+            
             _localBackfillTicket.Id = await MatchmakerService.Instance.CreateBackfillTicketAsync(_createBackfillTicketOptions);
             Debug.Log("_localBackfillTicket.id:" + _localBackfillTicket);
 
@@ -235,7 +245,7 @@ public class ServerStartUp : MonoBehaviour
 
     private async Task BackfillLoop()
     {
-        while (_backfilling && NeedsPlayers())
+        while (_backfilling /*&& NeedsPlayers()*/)
         {
             _localBackfillTicket = await MatchmakerService.Instance.ApproveBackfillTicketAsync(_localBackfillTicket.Id);
             if (!NeedsPlayers())
@@ -243,8 +253,11 @@ public class ServerStartUp : MonoBehaviour
                 await MatchmakerService.Instance.DeleteBackfillTicketAsync(_localBackfillTicket.Id);
                 _localBackfillTicket.Id = null;
                 _backfilling = false;
+
+                Debug.Log("private async Task BackfillLoop detecting players no longer needed.");
                 return;
             }
+            Debug.Log($"Connected clients: {NetworkManager.Singleton.ConnectedClients.Count}.\nMax players: {ConnectionApprovalHandler.MaxPlayers}");
             await Task.Delay(_ticketChecksMs);
         }
 
@@ -262,12 +275,10 @@ public class ServerStartUp : MonoBehaviour
     }
 
     private bool NeedsPlayers()
-    { // change to < 4 for actual game ---- is set to 1 for testing purposes
-        //return NetworkManager.Singleton.ConnectedClients.Count < ConnectionApprovalHandler.MaxPlayers;
-        
+    {        
         if(NetworkManager.Singleton.ConnectedClients.Count < ConnectionApprovalHandler.MaxPlayers)
         {
-            
+            Debug.Log("This game needs players.");
             return true;
         }
         else

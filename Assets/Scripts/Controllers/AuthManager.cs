@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Unity.Services.Authentication;
 using System.Threading.Tasks;
@@ -7,6 +5,7 @@ using UnityEngine.UI;
 using Unity.Services.Core;
 using TMPro;
 using UnityEngine.SceneManagement;
+using Unity.Netcode;
 
 public class AuthManager : MonoBehaviour
 {
@@ -79,13 +78,14 @@ public class AuthManager : MonoBehaviour
             
             logTxt.text = "Player ID: " + AuthenticationService.Instance.PlayerId;
             Debug.Log("Player ID: " + AuthenticationService.Instance.PlayerId);
-            SceneManager.LoadScene("main_menu");
-
+            
             if(AuthenticationService.Instance.PlayerName == null)
             {
                 _ = AuthenticationService.Instance.UpdatePlayerNameAsync(username);
                 Debug.Log("Player name updated -> " + AuthenticationService.Instance.PlayerName);
             }
+
+            SceneManager.LoadScene(1);
         }
         catch (AuthenticationException ex)
         {

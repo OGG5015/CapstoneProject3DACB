@@ -10,8 +10,12 @@ using System;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine.SceneManagement;
-using Unity.Services.Multiplay;
+using Unity.Services.Samples.Friends;
+using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine.UI;
+using UnityEditor;
+using TMPro;
+
 
 //using Unity.Netcode.Editor;
 
@@ -25,7 +29,6 @@ public class MatchmakerClient : MonoBehaviour
     private string _ticketId;
     public GameObject PrefabToSpawn;
     public string serviceProfileName;
-
 
     private void OnEnable()
     {
@@ -52,8 +55,9 @@ public class MatchmakerClient : MonoBehaviour
         {
             #if UNITY_EDITOR
             serviceProfileName = $"{serviceProfileName}{GetCloneNumberSuffix()}";
-            Debug.Log($"serviceProfileName: {serviceProfileName}");
             #endif
+            Debug.Log($"serviceProfileName: {serviceProfileName}");
+            
             
             //var initOptions = new InitializationOptions();
             initOptions.SetProfile(serviceProfileName);
@@ -65,6 +69,7 @@ public class MatchmakerClient : MonoBehaviour
             await UnityServices.InitializeAsync();
         }
         Debug.Log($"Signed In Anonymously as {serviceProfileName}({PlayerID()})");
+        
     }
 
     private string PlayerID()
@@ -72,7 +77,7 @@ public class MatchmakerClient : MonoBehaviour
         return AuthenticationService.Instance.PlayerId;
     }
 
-#if UNITY_EDITOR
+    #if UNITY_EDITOR
     private string GetCloneNumberSuffix()
     {
         {
@@ -86,7 +91,7 @@ public class MatchmakerClient : MonoBehaviour
             return projectCloneSuffix;
         }
     }
-#endif
+    #endif
 
     public void StartClient()
     {
@@ -114,6 +119,7 @@ public class MatchmakerClient : MonoBehaviour
         _ticketId = ticketResponse.Id;
         Debug.Log($"Ticket ID: {_ticketId}");
         PollTicketStatus();
+        
     }
 
     private async void PollTicketStatus()
@@ -137,6 +143,7 @@ public class MatchmakerClient : MonoBehaviour
                 case StatusOptions.Found:
                     gotAssignment = true;
                     TicketAssigned(multiplayAssignment);
+                    //MatchmakerService.Instance.DeleteTicketAsync(multiplayAssignment.ToString());
                     break;
 
                 case StatusOptions.InProgress:
@@ -164,26 +171,46 @@ public class MatchmakerClient : MonoBehaviour
         Debug.Log($"Ticket Assigned: {assignment.Ip}:{assignment.Port}");
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(assignment.Ip, (ushort)assignment.Port);
         NetworkManager.Singleton.StartClient();
-        //MatchmakerService.Instance.DeleteTicketAsync(assignment.ToString());
-        //Debug.Log("Deleted the ticket");
-        
-        
-        /*var instance = Instantiate(PrefabToSpawn);
-        var instanceNetworkObject = instance.GetComponent<NetworkObject>();
-        instanceNetworkObject.Spawn();*/
-
-
 
         //UnityEngine.SceneManagement.SceneManager.LoadScene("Game View");
 
-        //OnTicketAssigned();
-        //SceneManager.LoadScene("Game View");
+       // OnTicketAssigned();
+       
+
+       
+
+
+
+       //SceneManager.LoadScene("Game View", LoadSceneMode.Additive);
+        //SceneManager.LoadSceneAsync("Game View");
+        //SceneManager.SetActiveScene(SceneManager.GetSceneByName("Game View"));
+        //SceneManager.UnloadSceneAsync("Game_Options");
+        //LoadPlayerIcon(playerNumber);
+        SceneManager.LoadSceneAsync("Game View");
+
+        //Scene nextscene = SceneManager.GetSceneByName("Game View");
+        //SceneManager.SetActiveScene(SceneManager.GetSceneByName("Game View"));
+        //SceneManager.UnloadSceneAsync("Game_Options");
+       
 
     }
 
+    
+
+    /*private void LoadPlayerIcon(int playerNumber)
+    {
+        if(playerNumber == 1)
+        {
+            NetworkManager.Singleton.PrefabHandler.AddNetworkPrefab();
+        }
+        
+    }*/
+
     private void OnTicketAssigned()
     {
-        SceneManager.LoadScene("Game View");
+        //Debug.Log($"{NetworkManager.Singleton.ConnectedClientsList}");
+        //NetworkManager.Singleton.SceneManager.LoadScene("Game View", LoadSceneMode.Additive);
+        //SceneManager.LoadScene("Game View");
         
     }
 

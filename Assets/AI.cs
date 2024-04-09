@@ -253,9 +253,43 @@ public class AI : MonoBehaviour{
     // Start is called before the first frame update
     void Start(){
         target = gameObject.transform.position;
+        hexGrid = this.GetComponent<Collider>().GetComponentInParent<HexGrid>();
 
+        //stuff idk
+        /*
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
 
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+        {
+            hexGrid = hit.collider.GetComponentInParent<HexGrid>();
 
+            if (hexGrid != null)
+            {
+
+                Vector2 offsetCoordinates = HexMetrics.CoordinateToOffset(hit.point.x, hit.point.z, hexGrid.HexSize, hexGrid.Orientation);
+                offsetCoordinates = HexMetrics.AxialRound(offsetCoordinates);
+
+                Vector3 center = HexMetrics.Center(hexGrid.HexSize, (int)offsetCoordinates.x, (int)offsetCoordinates.y, hexGrid.Orientation);
+
+                if (hexGrid.Orientation == HexOrientation.PointyTop)
+                {
+                    transform.position = new Vector3(center.x, transform.position.y, center.z);
+                }
+                else
+                {
+                    transform.position = center;
+                }
+
+                Debug.Log("Hex Center: " + offsetCoordinates);
+                Debug.Log("Snapped to: " + transform.position);
+            }
+            else
+            {
+                Debug.Log("Hex grid is null");
+            }
+        }
+        */
         //size = GameObject.Find("/Grid").GetComponent();
         //size = 5f;
     }
@@ -265,7 +299,9 @@ public class AI : MonoBehaviour{
     }
 
     bool inRange() {
-        if ((gameObject.transform.position - nearestEnemy.transform.position).sqrMagnitude <= (20f * range)) 
+
+
+        if ((gameObject.transform.position - nearestEnemy.transform.position).sqrMagnitude <= ((hexGrid.HexSize*8f) * range))//was 20f 
         {
             return true;
         }
@@ -282,24 +318,26 @@ public class AI : MonoBehaviour{
             Destroy(gameObject);
         }
 
-        if (combat  && nearestEnemy != null){
-            if (((gameObject.transform.position - target).sqrMagnitude <= 4f) && !inRange()) {
+        if (combat  && nearestEnemy != null)
+        {
+            
+            if (((gameObject.transform.position - target).sqrMagnitude <= hexGrid.HexSize) && !inRange()) {
                 move = false;
-
+                
                 //x is greater
                 if (gameObject.transform.position.x > nearestEnemy.transform.position.x)
                 {
                     //unit is to upper right of target or on same y, move lower left
                     if (gameObject.transform.position.z >= nearestEnemy.transform.position.z)
                     {
-                        target.z = target.z - 5f;
-                        target.x = target.x - 8f;
+                        target.z = target.z - hexGrid.HexSize;
+                        target.x = target.x - (hexGrid.HexSize * 1.5f);
                     }
                     //unit is to lower right to target, move upper left
                     else if (gameObject.transform.position.z < nearestEnemy.transform.position.z)
                     {
-                        target.z = target.z + 5f;
-                        target.x = target.x - 8f;
+                        target.z = target.z + hexGrid.HexSize;
+                        target.x = target.x - (hexGrid.HexSize * 1.5f);
                     }
                 }
                 //x is less
@@ -308,14 +346,14 @@ public class AI : MonoBehaviour{
                     //unit is to upper left of target, move lower right
                     if (gameObject.transform.position.z > nearestEnemy.transform.position.z)
                     {
-                        target.y = target.y - 5f;
-                        target.x = target.x + 8f;
+                        target.y = target.y - hexGrid.HexSize;
+                        target.x = target.x + (hexGrid.HexSize * 1.5f);
                     }
                     //unit is to lower left of target or same y, move upper right
                     else if (gameObject.transform.position.z <= nearestEnemy.transform.position.z)
                     {
-                        target.z = target.z + 5f;
-                        target.x = target.x + 8f;
+                        target.z = target.z + hexGrid.HexSize;
+                        target.x = target.x + (hexGrid.HexSize * 1.5f);
                     }
                 }
                 //x is equal
@@ -324,12 +362,12 @@ public class AI : MonoBehaviour{
                     //unit is above target, move down
                     if (gameObject.transform.position.z > nearestEnemy.transform.position.z)
                     {
-                        target.z = target.z - 10f;
+                        target.z = target.z - (hexGrid.HexSize * 1.5f);
                     }
                     //unit is below target, move up
                     else if (gameObject.transform.position.z < nearestEnemy.transform.position.z)
                     {
-                        target.z = target.z + 10f;
+                        target.z = target.z + (hexGrid.HexSize * 1.5f);
                     }
                 }
 
@@ -353,7 +391,12 @@ public class AI : MonoBehaviour{
                 self.transform.position = Vector3.MoveTowards(self.transform.position, nearestEnemy.transform.position, speed);
             }*/
         }
-        
+
+        if (gameObject.transform.position != target && nearestEnemy == null) 
+        {
+            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, target, speed);
+        }
+
         /*
         SnapToHexCenter();
         if (combat){

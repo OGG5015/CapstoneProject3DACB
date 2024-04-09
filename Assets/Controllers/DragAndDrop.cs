@@ -13,6 +13,7 @@ public class DragAndDrop : MonoBehaviour
     bool isDragging = false;
     Vector3 PrevPos;
     public SFXPlaying dj;
+    public bool isPlanStage = true;
 
     private Vector3 GetMousePos()
     {
@@ -21,14 +22,17 @@ public class DragAndDrop : MonoBehaviour
 
     private void OnMouseDown()
     {
-        mousePosition = Input.mousePosition - GetMousePos();
-        isDragging = true;
-        dj.PlayPickup();
+        if (isPlanStage)
+        {
+            mousePosition = Input.mousePosition - GetMousePos();
+            isDragging = true;
+            dj.PlayPickup();
+        }
     }
 
     private void OnMouseDrag()
     {
-        if (isDragging)
+        if (isDragging && isPlanStage)
         {
             //transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition - mousePosition);
 
@@ -42,10 +46,13 @@ public class DragAndDrop : MonoBehaviour
 
     private void OnMouseUp()
     {
-        SnapToHexOrUnitBench();
+        if (isPlanStage)
+        {
+            SnapToHexOrUnitBench();
 
-        isDragging = false;
-        dj.PlayDrop();
+            isDragging = false;
+            dj.PlayDrop();
+        }
     }
 
     private void SnapToHexOrUnitBench()

@@ -19,7 +19,7 @@ public class gameoptions : MonoBehaviour
 
     public void splayer()
     {
-        SceneManager.LoadScene("Game View");
+        SceneManager.LoadScene("Countdown");//Game View
     }
 
     public void multiplayer()

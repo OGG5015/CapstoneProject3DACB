@@ -51,11 +51,11 @@ public class BarTimer : MonoBehaviour
         if (timeRemaining > 0)
         {
             timeRemaining -= Time.deltaTime;
-            Debug.Log("Time is running: " + timeRemaining);
+            //Debug.Log("Time is running: " + timeRemaining);
         }
         else
         {
-            Debug.Log("Time has run out! Starting timer over. ");
+            //Debug.Log("Time has run out! Starting timer over. ");
             timeRemaining = 10;
             if (isStagePlanning)
             {

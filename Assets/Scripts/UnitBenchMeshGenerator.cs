@@ -156,6 +156,25 @@ public class UnitBenchMeshGenerator : MonoBehaviour
 
     }
 
+    // return cellCenter if called
+    public Vector3 GetCellCenter(float index)
+    {
+        Vector3 benchOrigin = new Vector3(
+        unitBench.transform.position.x - (unitBench.Width * unitBench.SquareSize / 2f),
+        transform.position.y,
+        transform.position.z - (unitBench.Width * unitBench.SquareSize / 2f));
+
+        if (index == 0) { return benchOrigin; }
+
+        float cellCenterX = benchOrigin.x + (index + 1f) * unitBench.SquareSize;
+        float cellCenterZ = unitBench.transform.position.z;
+        Vector3 cellCenter = new Vector3(cellCenterX, unitBench.transform.position.y, cellCenterZ);
+        Debug.Log("Getting cell center of index " + index + ": " + cellCenter);
+
+        return cellCenter;
+
+    }
+
     
 }
 

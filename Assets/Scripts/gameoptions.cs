@@ -11,10 +11,10 @@ public class gameoptions : MonoBehaviour
         
     }
 
-    // Update is called once per frame
+    public float speed;
     void Update()
     {
-        
+        RenderSettings.skybox.SetFloat("_Rotation", Time.time * speed);
     }
 
     public void splayer()
@@ -22,8 +22,7 @@ public class gameoptions : MonoBehaviour
         SceneManager.LoadScene("Game View");
     }
 
-    public void multiplayer()
-    {
+    
 
-    }
+
 }

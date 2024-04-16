@@ -52,25 +52,6 @@ public class AI : MonoBehaviour{
     Vector3 mousePosition;
     bool isDragging = false;
 
-    //Scan returns true if there is an enemy in range
-    bool Scan(int unit){
-        //hexGrid = GetComponentInParent<HexGrid>();
-
-        /*if(hexGrid == null)
-        {
-            hexGrid = GetComponentInParent<HexGrid>();
-        }*/
-
-        /*MouseController.instance.OnLeftMouseClick += OnLeftMouseClick;
-        MouseController.instance.OnRightMouseClick += OnRightMouseClick;*/
-
-        /*centrePosition.x = (x) * (OuterRadius(hexSize) * 1.5f);
-        centrePosition.y = 0f;
-        centrePosition.z = (z + x * 0.5f - x / 2) * (InnerRadius(hexSize) * 2f);*/
-
-        return false;
-    }
-
     //returns the number of the unit that is the closest
     int getNearest(int unit){
 
@@ -245,57 +226,42 @@ public class AI : MonoBehaviour{
 
     }
 
-    //Move moves the unit to an adjacent tile, updating x & y as well
-    void Move(int unit, int enemy){ 
-        
-    }
-
     // Start is called before the first frame update
     void Start(){
+        nearestEnemy = FindClosestEnemy();
         target = gameObject.transform.position;
         hexGrid = this.GetComponent<Collider>().GetComponentInParent<HexGrid>();
-
-        //stuff idk
-        /*
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-        {
-            hexGrid = hit.collider.GetComponentInParent<HexGrid>();
-
-            if (hexGrid != null)
-            {
-
-                Vector2 offsetCoordinates = HexMetrics.CoordinateToOffset(hit.point.x, hit.point.z, hexGrid.HexSize, hexGrid.Orientation);
-                offsetCoordinates = HexMetrics.AxialRound(offsetCoordinates);
-
-                Vector3 center = HexMetrics.Center(hexGrid.HexSize, (int)offsetCoordinates.x, (int)offsetCoordinates.y, hexGrid.Orientation);
-
-                if (hexGrid.Orientation == HexOrientation.PointyTop)
-                {
-                    transform.position = new Vector3(center.x, transform.position.y, center.z);
-                }
-                else
-                {
-                    transform.position = center;
-                }
-
-                Debug.Log("Hex Center: " + offsetCoordinates);
-                Debug.Log("Snapped to: " + transform.position);
-            }
-            else
-            {
-                Debug.Log("Hex grid is null");
-            }
-        }
-        */
-        //size = GameObject.Find("/Grid").GetComponent();
-        //size = 5f;
     }
 
     void toggleCombat() {
         combat = !combat;
+    }
+
+    public GameObject FindClosestEnemy()
+    {
+        GameObject[] gos;
+
+        if (gameObject.tag == "T1") {
+            gos = GameObject.FindGameObjectsWithTag("T2");
+        }
+        else
+        {
+            gos = GameObject.FindGameObjectsWithTag("T1");
+        }
+        GameObject closest = null;
+        float distance = Mathf.Infinity;
+        Vector3 position = transform.position;
+        foreach (GameObject go in gos)
+        {
+            Vector3 diff = go.transform.position - position;
+            float curDistance = diff.sqrMagnitude;
+            if (curDistance < distance)
+            {
+                closest = go;
+                distance = curDistance;
+            }
+        }
+        return closest;
     }
 
     bool inRange() {
@@ -316,6 +282,10 @@ public class AI : MonoBehaviour{
         if(currHp <= 0)
         {
             Destroy(gameObject);
+        }
+
+        if (nearestEnemy == null) {
+            nearestEnemy = FindClosestEnemy();
         }
 
         if (combat  && nearestEnemy != null)
@@ -396,37 +366,8 @@ public class AI : MonoBehaviour{
         {
             gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, target, speed);
         }
-
-        /*
-        SnapToHexCenter();
-        if (combat){
-            self.transform.position = Vector3.MoveTowards(self.transform.position, nearestEnemy.transform.position, speed);
-            SnapToHexCenter();
-            //AIFunctionality();
-
-            for (int unit = 0; unit < unitList.Count; unit++){
-                if (Scan(unit)){
-                    Attack(unit, getNearest(unit));
-                }
-                else {
-                    Move(unit, getNearest(unit));
-                }
-            }
-        }
-        */
-
-
     }
 
-    //nearestInRange returns true if nearest enemy unit is within range
-    /*bool nearestInRange(int unit){
-        if ((unitList[unit].getRange() > 0) && (Vector3.Distance(transform.position, target.position) > unitList[unit].getRange())){
-            return false;
-        }
-        else{
-            return true;
-        }
-    }*/
     void AIFunctionality(int unit){
         if ((!requireTarget)){
             return; //if no target was set and we require one, AI will not function.
@@ -439,20 +380,6 @@ public class AI : MonoBehaviour{
         if (requireTarget){
             fight();
         }
-        /*else if (nearestInRange()){
-            if (!toggle){
-                return;
-            }
-            if (distance > unitList[unit].getRange()){
-                canAttack = false; //the target is too far away to attack
-                Move(unit, getNearest(unit)); //move closer
-            }
-        }*/
-            //start attacking if close enough
-
-        /*if ((distance < unitList[unit].getRange())){
-            Attack(unit, target);
-        }*/
     }
 }
 

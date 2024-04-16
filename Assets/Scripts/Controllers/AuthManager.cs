@@ -85,7 +85,7 @@ public class AuthManager : MonoBehaviour
                 Debug.Log("Player name updated -> " + AuthenticationService.Instance.PlayerName);
             }
 
-            SceneManager.LoadScene(1);
+            SceneManager.LoadScene("Game_Options");
         }
         catch (AuthenticationException ex)
         {

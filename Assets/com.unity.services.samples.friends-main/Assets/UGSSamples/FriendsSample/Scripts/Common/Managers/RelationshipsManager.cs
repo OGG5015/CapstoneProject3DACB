@@ -1,12 +1,22 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Codice.Client.Common;
+using Newtonsoft.Json;
+using PlasticPipe.PlasticProtocol.Messages;
+using TMPro;
+using Unity.Plastic.Newtonsoft.Json;
 using Unity.Services.Authentication;
+using Unity.Services.Core;
 using Unity.Services.Friends;
 using Unity.Services.Friends.Exceptions;
 using Unity.Services.Friends.Models;
+using UnityEditor;
+using UnityEditor.PackageManager;
 using UnityEngine;
-
+using UnityEngine.Playables;
+using UnityEngine.UI;
 namespace Unity.Services.Samples.Friends
 {
     public class RelationshipsManager : MonoBehaviour
@@ -28,11 +38,20 @@ namespace Unity.Services.Samples.Friends
         IBlockedListView m_BlockListView;
 
         PlayerProfile m_LoggedPlayerProfile;
-
+        public string serviceProfileName;
+        char messageContent;
+        [SerializeField] public TMP_InputField inviteUserText;
         async void Start()
         {
+
             //If this is added to a larger project, the service init order should be controlled from one place, and replace this.
-            await UnityServiceAuthenticator.SignIn();
+            await UnityServiceAuthenticator.SignIn(serviceProfileName);
+            await Init();
+        }
+
+
+        public async void StartFriends()
+        {
             await Init();
         }
 
@@ -43,6 +62,7 @@ namespace Unity.Services.Samples.Friends
 
         async Task Init()
         {
+
             await FriendsService.Instance.InitializeAsync();
             UIInit();
             await LogInAsync();
@@ -91,6 +111,7 @@ namespace Unity.Services.Samples.Friends
 
         async Task LogInAsync()
         {
+
             var playerID = AuthenticationService.Instance.PlayerId;
             var playerName = await AuthenticationService.Instance.GetPlayerNameAsync();
             m_LoggedPlayerProfile = new PlayerProfile(playerName, playerID);
@@ -238,6 +259,35 @@ namespace Unity.Services.Samples.Friends
             }
         }
 
+        public void SendFriendInvite()
+        {
+            string messageName;
+            messageName = "Would you like to join my party?";
+            string playerID = AuthenticationService.Instance.PlayerId;
+            //await SendInvite();
+
+            //Network.SendMessage(messageName, playerID);
+        }
+
+        
+        async Task SendInvite(string playerID)
+        {
+            try
+            {
+                GameObject.Find("RelationshipsManager").SendMessage("message", playerID);
+                //this.SendMessage("message", playerID);
+                // Send a message to the recipient using the Friends service
+                //await FriendsService.Instance.MessageAsync<char>(playerID, messageContent);
+                Debug.Log($"Message sent to {playerID}: {messageContent}");
+
+            }
+            catch (FriendsServiceException e)
+            {
+                Debug.LogError($"Failed to send message to {playerID}: {e}");
+            }
+        }
+
+
         async Task RemoveFriend(string playerId)
         {
             try
@@ -366,7 +416,7 @@ namespace Unity.Services.Samples.Friends
             catch (FriendsServiceException e)
             {
                 Debug.Log(
-                    "An error occurred while performing the action. HttpCode: " + e.StatusCode + ", FriendsErrorCode: " + e.ErrorCode +  ", Message: " + e.Message);
+                    "An error occurred while performing the action. HttpCode: " + e.StatusCode + ", FriendsErrorCode: " + e.ErrorCode + ", Message: " + e.Message);
             }
         }
 

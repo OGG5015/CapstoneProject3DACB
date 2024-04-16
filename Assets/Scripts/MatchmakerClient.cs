@@ -15,6 +15,12 @@ using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine.UI;
 using UnityEditor;
 using TMPro;
+using Unity.Services.Friends;
+using Unity.Services.Samples;
+using Unity.Services.Lobbies;
+
+
+
 
 
 //using Unity.Netcode.Editor;
@@ -44,9 +50,10 @@ public class MatchmakerClient : MonoBehaviour
     {
         await ClientSignIn(serviceProfileName);
         await AuthenticationService.Instance.SignInAnonymouslyAsync(); // CHANGE THIS TO USERNAME AND PASSWORD AT A LATER TIME
+        
     }
 
-    private async Task ClientSignIn(string serviceProfileName/* = null*/)
+    private async Task ClientSignIn(string serviceProfileName /* = null*/)
     {
         
         var initOptions = new InitializationOptions();
@@ -62,6 +69,7 @@ public class MatchmakerClient : MonoBehaviour
             //var initOptions = new InitializationOptions();
             initOptions.SetProfile(serviceProfileName);
             await UnityServices.InitializeAsync(initOptions);
+
         }
         else
         {
@@ -69,6 +77,7 @@ public class MatchmakerClient : MonoBehaviour
             await UnityServices.InitializeAsync();
         }
         Debug.Log($"Signed In Anonymously as {serviceProfileName}({PlayerID()})");
+        
         
     }
 
@@ -106,14 +115,17 @@ public class MatchmakerClient : MonoBehaviour
         var players = new List<Player>
         {
             new Player(
-                PlayerID()/*,
-                new MatchmakingPlayerData
-                {
-                    Skill = 100
-                }*/
+                PlayerID()
 
                 )
         };
+
+
+        Debug.Log($"Players in ticket: \n");
+        for(int i = 0; i < players.Count; i++)
+        {
+            Debug.Log($"{players.ToArray()[i]}\n");
+        }
 
         var ticketResponse = await MatchmakerService.Instance.CreateTicketAsync(players, options);
         _ticketId = ticketResponse.Id;
@@ -170,7 +182,10 @@ public class MatchmakerClient : MonoBehaviour
     {
         Debug.Log($"Ticket Assigned: {assignment.Ip}:{assignment.Port}");
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(assignment.Ip, (ushort)assignment.Port);
+        Lobbies.Instance.GetLobbyAsync(assignment.Ip);
+        
         NetworkManager.Singleton.StartClient();
+        NetworkManager.Singleton.SceneManager.LoadScene("Game View", LoadSceneMode.Single);
 
         //UnityEngine.SceneManagement.SceneManager.LoadScene("Game View");
 
@@ -186,7 +201,7 @@ public class MatchmakerClient : MonoBehaviour
         //SceneManager.SetActiveScene(SceneManager.GetSceneByName("Game View"));
         //SceneManager.UnloadSceneAsync("Game_Options");
         //LoadPlayerIcon(playerNumber);
-        SceneManager.LoadSceneAsync("Game View");
+        //SceneManager.LoadSceneAsync("Game View");
 
         //Scene nextscene = SceneManager.GetSceneByName("Game View");
         //SceneManager.SetActiveScene(SceneManager.GetSceneByName("Game View"));

@@ -12,6 +12,8 @@ using Unity.Services.Matchmaker;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using System.Runtime.CompilerServices;
+using Unity.Services.Friends;
+using Unity.Services.Samples.Friends;
 //using Matchplay.Server;
 
 public class ServerStartUp : MonoBehaviour
@@ -35,6 +37,7 @@ public class ServerStartUp : MonoBehaviour
     
 
     private IMultiplayService _multiplayService;
+    private RelationshipsManager relationshipsManager;
     //private int 
     async void Start()
     {
@@ -58,7 +61,6 @@ public class ServerStartUp : MonoBehaviour
             }
         }
 
-        //
         if (server)
         {
             //#if dedicatedServer
@@ -70,17 +72,9 @@ public class ServerStartUp : MonoBehaviour
         else
         {
             Debug.Log("Client detected");
-            
-            
             ClientInstance?.Invoke();
-
-
         }
-        //
-        
-        
     }
-
 
     private void StartServer()
     {

@@ -13,15 +13,20 @@ public class BarTimer : MonoBehaviour
     public TMP_Text stageName;
     public GameObject[] DnDScriptGuys;
     public DragAndDrop DnD;
+    public Material dayM, nightM;
+    public ReflectionProbe rp;
+    public UnitStore shop;
 
     private void Start()
     {
         timerIsRunning = true;
         DnDScriptGuys = GameObject.FindGameObjectsWithTag("Unit");
+        shop = GameObject.Find("UnitStore").GetComponent<UnitStore>();
     }
     void Update()
     {
         DisplayBarTime();
+        DnDScriptGuys = GameObject.FindGameObjectsWithTag("Unit");
     }
 
     void DisplayBarTime()
@@ -60,23 +65,37 @@ public class BarTimer : MonoBehaviour
             if (isStagePlanning)
             {
                 isStagePlanning = false;
-                //Debug.Log("isStagePlanning = true = " + isStagePlanning);
                 stageName.text = "Fighting Stage";
-                //DnDScriptGuys.GetComponent<DragAndDrop>().enabled = true;
+                
+                ////// Change Skybox, Reflections and Fog //////
+                RenderSettings.skybox = dayM;
+                RenderSettings.fogColor = new Color((float)(0.98), (float)(0.55), (float)(0.32));
+                DynamicGI.UpdateEnvironment();
+                rp.RenderProbe();
+
+                ////// Stop Units from moving //////
                 foreach (GameObject d in DnDScriptGuys)
                 {
                     DnD = d.GetComponent<DragAndDrop>();
                     DnD.isPlanStage = false;
                 }
 
-
             }
             else
             {
                 isStagePlanning = true;
-                //Debug.Log("isStagePlanning = false = " + isStagePlanning);
                 stageName.text = "Planning Stage";
-                //DnDScriptGuys.GetComponent<DragAndDrop>().enabled = false;
+
+                ////// Fill Store/Bench //////
+                shop.FillUnitBench();
+
+                ////// Change Skybox, Reflections and Fog //////
+                RenderSettings.skybox = nightM;
+                RenderSettings.fogColor = new Color((float)(0.64), (float)(0.41), (float)(0.64));
+                DynamicGI.UpdateEnvironment();
+                rp.RenderProbe();
+
+                ////// Let Units Move //////
                 foreach (GameObject d in DnDScriptGuys)
                 {
                     DnD = d.GetComponent<DragAndDrop>();

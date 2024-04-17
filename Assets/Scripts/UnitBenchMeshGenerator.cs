@@ -9,6 +9,7 @@ public class UnitBenchMeshGenerator : MonoBehaviour
     [field: SerializeField] public LayerMask gridLayer { get; private set; }
     [field: SerializeField] public UnitBench unitBench { get; private set; }
     public Transform explosionTest;
+    public UnitStore shop;
 
     private void Awake()
     {
@@ -19,6 +20,12 @@ public class UnitBenchMeshGenerator : MonoBehaviour
         {
             Debug.LogError("UnitBenchMeshGenerator could not find a UnitBench component in its parent or itself");
         }
+
+    }
+
+    private void Start()
+    {
+        shop = GameObject.Find("UnitStore").GetComponent<UnitStore>();
     }
 
     private void OnEnable()
@@ -147,6 +154,8 @@ public class UnitBenchMeshGenerator : MonoBehaviour
         Vector3 localPoint = transform.InverseTransformPoint(hit.point);
         float distanceFromOriginX = localPoint.x - benchOrigin.x;
         int cellIndex = Mathf.FloorToInt(distanceFromOriginX / unitBench.SquareSize);
+        shop.isBenchPosFull[cellIndex] = false; // notify store
+        Debug.Log("Bench is " + shop.isBenchPosFull[cellIndex] + " at " + cellIndex);
         Debug.Log("Clicked on unit bench cell " + cellIndex);
 
         float cellCenterX = benchOrigin.x + (cellIndex + /*0.5f*/ 1f) * unitBench.SquareSize;

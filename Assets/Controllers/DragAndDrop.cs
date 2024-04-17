@@ -10,10 +10,17 @@ public class DragAndDrop : MonoBehaviour
     private HexGrid hexGrid;
     private UnitBench unitBench;
     Vector3 mousePosition;
-    bool isDragging = false;
+    public bool isDragging = false;
     Vector3 PrevPos;
     public SFXPlaying dj;
     public bool isPlanStage = true;
+    public UnitStore shop;
+
+    private void Start()
+    {
+        dj = GameObject.Find("sfx").GetComponent<SFXPlaying>();
+        shop = GameObject.Find("UnitStore").GetComponent<UnitStore>();
+    }
 
     private Vector3 GetMousePos()
     {
@@ -114,7 +121,7 @@ public class DragAndDrop : MonoBehaviour
                 }
 
                 Debug.Log("Hex Center: " + offsetCoordinates);
-                Debug.Log("Snapped to: " + transform.position);
+                Debug.Log("Snapped to: " + transform.position +" (Grid)");
             }
             else
             {
@@ -153,9 +160,12 @@ public class DragAndDrop : MonoBehaviour
                 Vector3 cellCenter = new Vector3(cellCenterX, unitBench.transform.position.y, cellCenterZ);
 
                 transform.position = cellCenter;
-                Debug.Log("Snapped to: " + cellCenter);
+                Debug.Log("Snapped to: " + cellCenter +" (Bench)");
 
                 PrevPos = transform.position;
+
+                shop.isBenchPosFull[cellIndex] = true;
+                Debug.Log("Bench is " + shop.isBenchPosFull[cellIndex] + " at " + cellIndex);
             }
             else
             {

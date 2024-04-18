@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -45,46 +46,53 @@ public class UnitBenchMeshGenerator : MonoBehaviour
         CreateUnitBenchMesh(unitBench.Width, unitBench.SquareSize, gridLayer);
     }
 
+
+
     public void CreateUnitBenchMesh(int Width, float SquareSize, LayerMask layerMask)
     {
         ClearUnitBenchMesh();
-        Vector3[] vertices = new Vector3[4 * Width];
-
-        for (int i = 0; i < Width; i++)
-        {
-            /*float xPos = i * SquareSize;
-            float yPos = 0f;
-            float zPos = 0f;*/
-
-            float xPos = unitBench.transform.position.x + i * SquareSize;
-            float yPos = unitBench.transform.position.y;
-            float zPos = unitBench.transform.position.z;
-
-            vertices[i * 4] = new Vector3(xPos, yPos, zPos);
-            vertices[i * 4 + 1] = new Vector3(xPos + SquareSize, yPos, zPos);
-            vertices[i * 4 + 2] = new Vector3(xPos + SquareSize, yPos, zPos + SquareSize);
-            vertices[i * 4 + 3] = new Vector3(xPos, yPos, zPos + SquareSize);
-        }
-
-        int[] triangles = new int[6 * (Width - 1)];
-
-        for (int i = 0; i < Width - 1; i++)
-        {
-            triangles[i * 6] = i * 4;
-            triangles[i * 6 + 1] = i * 4 + 1;
-            triangles[i * 6 + 2] = i * 4 + 2;
-            triangles[i * 6 + 3] = i * 4;
-            triangles[i * 6 + 4] = i * 4 + 2;
-            triangles[i * 6 + 5] = i * 4 + 3;
-        }
 
         Mesh UBmesh = new Mesh();
         UBmesh.name = "Unit Bench Mesh";
+
+        Vector3[] vertices;
+
+        vertices = new Vector3[(Width + 1) * (Width + 1)];
+
+        for (int x = 0; x <= Width; x++)
+        {
+            for (int z = 0; z <= Width; z++)
+            {
+                vertices[x * (Width + 1) + z] = new Vector3((x * SquareSize) - (SquareSize / 2), 0, z - (SquareSize / 2));
+            }
+        }
+
         UBmesh.vertices = vertices;
+
+        int[] triangles = new int[Width * Width * 6];
+
+        int triangleIndex = 0;
+        for (int x = 0; x < Width; x++)
+        {
+            for (int z = 0; z < Width; z++)
+            {
+                int vertexIndex = x * (Width + 1) + z;
+
+                triangles[triangleIndex++] = vertexIndex;
+                triangles[triangleIndex++] = vertexIndex + 1;
+                triangles[triangleIndex++] = vertexIndex + (Width + 1);
+
+                triangles[triangleIndex++] = vertexIndex + 1;
+                triangles[triangleIndex++] = vertexIndex + (Width + 1) + 1;
+                triangles[triangleIndex++] = vertexIndex + (Width + 1);
+            }
+        }
+
         UBmesh.triangles = triangles;
+        UBmesh.vertices = vertices;
+
         UBmesh.RecalculateNormals();
         UBmesh.RecalculateBounds();
-        UBmesh.Optimize();
 
         GetComponent<MeshFilter>().sharedMesh = UBmesh;
         GetComponent<MeshCollider>().sharedMesh = UBmesh;
@@ -122,16 +130,33 @@ public class UnitBenchMeshGenerator : MonoBehaviour
 
     private void OnLeftMouseClick(RaycastHit hit)
     {
-        Debug.Log("Hit object: " + hit.transform.name + " at position " + hit.point);
+        /*Vector3 benchOrigin = new Vector3(
+            unitBench.transform.position.x - (unitBench.Width  /*- 1 ) * unitBench.SquareSize / 2f,
+            unitBench.transform.position.y,
+            unitBench.transform.position.z
+        );*/
+
+
+
+        Vector3 benchOrigin = new Vector3(
+        unitBench.transform.position.x - (unitBench.Width * unitBench.SquareSize / 2f),
+        transform.position.y,
+        transform.position.z - (unitBench.Width * unitBench.SquareSize / 2f)
+    );
+
+
+        Vector3 localPoint = transform.InverseTransformPoint(hit.point);
+        float distanceFromOriginX = localPoint.x - benchOrigin.x;
+        int cellIndex = Mathf.FloorToInt(distanceFromOriginX / unitBench.SquareSize);
+        Debug.Log("Clicked on unit bench cell " + cellIndex);
+
+        float cellCenterX = benchOrigin.x + (cellIndex + /*0.5f*/ 1f) * unitBench.SquareSize;
+        float cellCenterZ = unitBench.transform.position.z;
+        Vector3 cellCenter = new Vector3(cellCenterX, unitBench.transform.position.y, cellCenterZ);
+        Debug.Log("Center of the clicked cell: " + cellCenter);
+
     }
 
-    private void OnRightMouseClick(RaycastHit hit)
-    {
-        float localX = hit.point.x - hit.transform.position.x;
-        float localZ = hit.point.z - hit.transform.position.z;
-
-        Vector2 location = HexMetrics.CoordinateToOffset(localX, localZ, unitBench.SquareSize, HexOrientation.FlatTop);
-        Debug.Log("Right Clicked on Square: " + location);
-        Instantiate(explosionTest, hit.point, Quaternion.identity);
-    }
+    
 }
+

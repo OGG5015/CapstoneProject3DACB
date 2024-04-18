@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
 public class HexGridMeshGenerator : MonoBehaviour
@@ -12,6 +14,8 @@ public class HexGridMeshGenerator : MonoBehaviour
 
     private void Awake()
     {
+        
+
         hexGrid = GetComponentInParent<HexGrid>();
         /*if(hexGrid == null)
         {

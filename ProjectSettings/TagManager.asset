@@ -7,6 +7,8 @@ TagManager:
   - HexCell
   - GameObject
   - UnitBench
+  - T1
+  - T2
   layers:
   - Default
   - TransparentFX

@@ -27,6 +27,10 @@ public class AI : MonoBehaviour{
     public int spd = 10;
     public int tier = 1;
     public float range = 1.0f;
+
+    public float boostRange = 5.0f;
+
+    public float boostAmount = 5.0f;
     public bool phys = true;
     private string trait1;
     private string trait2;
@@ -226,6 +230,12 @@ public class AI : MonoBehaviour{
 
     }
 
+
+    //Move moves the unit to an adjacent tile, updating x & y as well
+    void Move(int unit, int enemy){ 
+        
+    }
+
     // Start is called before the first frame update
     void Start(){
         nearestEnemy = FindClosestEnemy();
@@ -274,6 +284,40 @@ public class AI : MonoBehaviour{
 
         return false;
     }
+    //Trait bonuses
+           public void BoostTraitsWithinRange()
+    {
+          foreach (GameObject unit in unitList)
+        {
+             if (unit.GetComponent<AI>().team == this.team)
+            {
+                foreach (GameObject otherUnit in unitList)
+                {
+                    if (otherUnit == unit || otherUnit.GetComponent<AI>().team != this.team)
+                        continue;
+
+                    float distance = Vector3.Distance(unit.transform.position, otherUnit.transform.position);
+
+                    if (distance <= boostRange)
+                    {
+                        AI unitAI = unit.GetComponent<AI>();
+                        AI otherUnitAI = otherUnit.GetComponent<AI>();
+
+                        unitAI.str += (int)boostAmount;
+                        unitAI.mag += (int)boostAmount;
+                        unitAI.def += (int)boostAmount;
+                        unitAI.spr += (int)boostAmount;
+                        unitAI.spd += (int)boostAmount;
+
+                        otherUnitAI.str += (int)boostAmount;
+                        otherUnitAI.mag += (int)boostAmount;
+                        otherUnitAI.def += (int)boostAmount;
+                        otherUnitAI.spr += (int)boostAmount;
+                        otherUnitAI.spd += (int)boostAmount;
+                     } } }
+                }
+                }
+
 
     // Update is called once per frame
     void Update(){
@@ -355,6 +399,8 @@ public class AI : MonoBehaviour{
             {
                 gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, target, speed);
             }
+            //Calling trait bonus
+            BoostTraitsWithinRange(); 
 
             /*if (move) {
 

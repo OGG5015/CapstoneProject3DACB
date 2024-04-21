@@ -33,8 +33,8 @@ public class ServerStartUp : MonoBehaviour
     private IServerEvents _serverEvents;
     private bool _backfilling = false;
     //MatchmakingResults payload;
-    
-    
+
+
 
     private IMultiplayService _multiplayService;
     private RelationshipsManager relationshipsManager;
@@ -66,7 +66,7 @@ public class ServerStartUp : MonoBehaviour
             //#if dedicatedServer
             Debug.Log("Server detected");
             StartServer();
-            await StartServerServices(); 
+            await StartServerServices();
             //#endif
         }
         else
@@ -90,7 +90,7 @@ public class ServerStartUp : MonoBehaviour
         try
         {
             _multiplayService = MultiplayService.Instance;
-            await _multiplayService.StartServerQueryHandlerAsync((ushort) ConnectionApprovalHandler.MaxPlayers, "n/a", "n/a", "0", "n/a");
+            await _multiplayService.StartServerQueryHandlerAsync((ushort)ConnectionApprovalHandler.MaxPlayers, "n/a", "n/a", "0", "n/a");
         }
         catch (Exception ex)
         {
@@ -190,7 +190,7 @@ public class ServerStartUp : MonoBehaviour
         {
             Debug.LogWarning(message: $"Something went wrong trying to get the MatchmakerPayload in GetMatchmakerAllocationPayloadAsync:\n {ex}");
         }
-        
+
         return null;
     }
 
@@ -205,12 +205,12 @@ public class ServerStartUp : MonoBehaviour
     {
         Debug.Log("Beginning Task BeginBackFilling");
         var matchProperties = payload.MatchProperties;
-        
-        if(_backfilling)
+
+        if (_backfilling)
         {
             Debug.Log("Already backfilling, no need to start another");
         }
-        
+
         //MatchplayBackfiller backfiller = new MatchplayBackfiller(_externalConnectionString,"ACBMultiplayerMode",  matchProperties,  10);
         //await backfiller.BeginBackfilling();
 
@@ -225,7 +225,7 @@ public class ServerStartUp : MonoBehaviour
                 Connection = _externalConnectionString,
                 Properties = new BackfillTicketProperties(matchProperties)
             };
-            
+
             _localBackfillTicket.Id = await MatchmakerService.Instance.CreateBackfillTicketAsync(_createBackfillTicketOptions);
             Debug.Log("_localBackfillTicket.id:" + _localBackfillTicket);
 
@@ -261,7 +261,7 @@ public class ServerStartUp : MonoBehaviour
     private async void ClientDisconnected(ulong clientId)
     {
 
-        
+
         if (!_backfilling && NetworkManager.Singleton.ConnectedClients.Count > 0 && NeedsPlayers())
         {
             await BeginBackfilling(_matchmakingPayload);
@@ -269,10 +269,12 @@ public class ServerStartUp : MonoBehaviour
     }
 
     private bool NeedsPlayers()
-    {        
-        if(NetworkManager.Singleton.ConnectedClients.Count < ConnectionApprovalHandler.MaxPlayers)
+    {
+        if (NetworkManager.Singleton.ConnectedClients.Count < ConnectionApprovalHandler.MaxPlayers)
         {
             Debug.Log("This game needs players.");
+            Debug.Log($"Connected clients: {NetworkManager.Singleton.ConnectedClients.Count}.\nMax players: {ConnectionApprovalHandler.MaxPlayers}");
+
             return true;
         }
         else

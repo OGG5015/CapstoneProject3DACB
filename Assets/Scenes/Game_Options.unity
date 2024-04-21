@@ -2895,9 +2895,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 868115143}
-        m_TargetAssemblyTypeName: MatchmakerClient, Assembly-CSharp
-        m_MethodName: StartClient
+      - m_Target: {fileID: 2135311221}
+        m_TargetAssemblyTypeName: ClientLobby, Assembly-CSharp
+        m_MethodName: FindMatch
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

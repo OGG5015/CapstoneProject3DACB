@@ -2,14 +2,20 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using TMPro;
+using Unity.Multiplayer.Samples.Utilities;
+using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using Unity.VisualScripting;
 using UnityEditor;
+using UnityEditor.MemoryProfiler;
+using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,6 +28,8 @@ public class ClientLobby : MonoBehaviour
     private bool IsPrivate;
     private string playerName;
     private float lobbyUpdateTimer;
+    public delegate void LobbyInfoDelegate(List<string> lobbyPlayers);
+    public static event LobbyInfoDelegate OnLobbyInfoReceived;
 
     /*private async void Start()
     {
@@ -57,6 +65,17 @@ public class ClientLobby : MonoBehaviour
 
     }*/
 
+    private void OnEnable()
+    {
+        MatchmakerClient.OnServerInfoReceived += ReceiveServerInfo;
+        //MatchmakerClient.OnTicketStatusReceived += ReceiveTicketStatus;
+    }
+
+    private void OnDisable()
+    {
+        MatchmakerClient.OnServerInfoReceived -= ReceiveServerInfo;
+    }
+
     private void Update()
     {
         HandleLobbyHeartbeat();
@@ -65,7 +84,7 @@ public class ClientLobby : MonoBehaviour
 
     private async void HandleLobbyHeartbeat()
     {
-        if (hostLobby != null)
+        if (IsLobbyHost())
         {
             heartbeatTimer -= Time.deltaTime;
             if (heartbeatTimer < 0f)
@@ -73,9 +92,14 @@ public class ClientLobby : MonoBehaviour
                 float heartbeatTimerMax = 15;
                 heartbeatTimer = heartbeatTimerMax;
 
-                await LobbyService.Instance.SendHeartbeatPingAsync(hostLobby.Id);
+                await LobbyService.Instance.SendHeartbeatPingAsync(joinedLobby.Id);
             }
         }
+    }
+
+    private bool IsLobbyHost()
+    {
+        return joinedLobby != null && joinedLobby.HostId == AuthenticationService.Instance.PlayerId;
     }
 
     private async void HandleLobbyPollForUpdates()
@@ -83,6 +107,7 @@ public class ClientLobby : MonoBehaviour
         if (joinedLobby != null)
         {
             lobbyUpdateTimer -= Time.deltaTime;
+            //Debug.Log("Update timer is NOT null");
             if (lobbyUpdateTimer < 0f)
             {
                 float lobbyUpdateTimerMax = 1.1f;
@@ -92,9 +117,13 @@ public class ClientLobby : MonoBehaviour
                 joinedLobby = lobby;
             }
         }
+        //Debug.Log("Heartbeat timer is null");
     }
 
     public Text generatedLobbyCodeText;
+    public static event System.Action MatchmakerClientInstance;
+    public static event System.Action MatchmakerClientLobbyInstance;
+
 
 
     public async void CreateLobby()
@@ -118,17 +147,60 @@ public class ClientLobby : MonoBehaviour
             hostLobby = lobby;
             joinedLobby = hostLobby;
 
-            
+
 
 
             Debug.Log("Created Lobby! " + lobby.Name + "; Lobby Code: " + lobby.LobbyCode);
             generatedLobbyCodeText.text = lobby.LobbyCode;
+            //Update();
+
+
         }
         catch (LobbyServiceException e)
         {
             Debug.Log($"There was an issue creating a lobby in ClientLobby CreateLobby(): {e}");
         }
     }
+
+    public void FindMatch()
+    {
+        OnLobbyInfoReceived?.Invoke(GetLobbyPlayers());
+        MatchmakerClientInstance?.Invoke();
+
+
+    }
+    public List<string> GetLobbyPlayers()
+    {
+        List<string> playerIDs = new List<string>();
+        foreach (Player player in joinedLobby.Players)
+        {
+            playerIDs.Add(player.Id);
+        }
+        return playerIDs;
+    }
+
+
+    private void ReceiveServerInfo(string ipAddress, int port, bool lobbyTicketStatus)
+    {
+        // Update ClientLobby with the received server information
+        if (lobbyTicketStatus == false)
+        {
+            Debug.Log("Ticket failed.");
+        }
+        else
+        {
+            Debug.Log($"Received server info: IP Address - {ipAddress}, Port - {port}");
+
+            foreach (Player player in joinedLobby.Players)
+            {
+                if (!IsLobbyHost())
+                {
+                    NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(ipAddress, (ushort)port);
+                }
+            }
+        }
+    }
+
 
     private async void ListLobbies()
     {
@@ -148,11 +220,13 @@ public class ClientLobby : MonoBehaviour
 
     }
 
-[SerializeField] private TMP_InputField lobbyCodeInput = default;
+    [SerializeField] private TMP_InputField lobbyCodeInput = default;
     public void JoinByCode()
     {
         string playerLobbyCode = lobbyCodeInput.text;
         JoinLobbyByCode(playerLobbyCode);
+
+
     }
 
     private async void JoinLobbyByCode(string lobbyCode)
@@ -167,13 +241,22 @@ public class ClientLobby : MonoBehaviour
             joinedLobby = lobby;
             Debug.Log($"Joined lobby with code {lobbyCode}");
             //ClientLobby.Instance.PrintPlayers(joinedLobby);
+            //Update();
+
+            foreach (Player player in joinedLobby.Players)
+            {
+                Debug.Log($"{player.Id}\n");
+            }
+
         }
         catch (LobbyServiceException e)
         {
             Debug.Log($"There was an issue joining the lobby by code in ClientLobby JoinLobbyByCode(): {e}");
         }
+
+
     }
-    
+
     private void PrintPlayers()
     {
         PrintPlayers(joinedLobby);
@@ -186,6 +269,13 @@ public class ClientLobby : MonoBehaviour
         {
             Debug.Log(player.Id + " " + player.Data["PlayerName"].Value);
         }
+    }
+
+
+    public List<Player> GetPlayers()
+    {
+        List<Player> players = joinedLobby.Players;
+        return players;
     }
 
     private Player GetPlayer()
@@ -291,6 +381,9 @@ public class ClientLobby : MonoBehaviour
             Debug.Log($"There was an error deleting the lobby game in ClientLobby DeleteLobby(): {e}");
         }
     }
+
+
+
 
     /*static async Task<Player> GetPlayerFromAnonymousLoginAsync()
     {

@@ -11,13 +11,19 @@ using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine.SceneManagement;
 using Unity.Services.Samples.Friends;
-using Microsoft.Unity.VisualStudio.Editor;
+//using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine.UI;
 using UnityEditor;
 using TMPro;
 using Unity.Services.Friends;
 using Unity.Services.Samples;
 using Unity.Services.Lobbies;
+using Unity.Services.Multiplay;
+using Unity.VisualScripting;
+
+//using UnityEditor.PackageManager;
+
+
 
 
 
@@ -35,10 +41,18 @@ public class MatchmakerClient : MonoBehaviour
     private string _ticketId;
     public GameObject PrefabToSpawn;
     public string serviceProfileName;
+    public delegate void ServerInfoDelegate(string ipAddress, int port, bool lobbyTicketStatus);
+    public static event ServerInfoDelegate OnServerInfoReceived;
+    private List<string> playersFromLobby;
+    private delegate void TicketStatusDelegate(bool ticketStatus);
+    private static event TicketStatusDelegate OnTicketStatusReceived;
+
 
     private void OnEnable()
     {
         ServerStartUp.ClientInstance += SignIn;
+        ClientLobby.MatchmakerClientInstance += StartClient;
+        ClientLobby.OnLobbyInfoReceived += ReceiveLobbyInfo;
     }
 
     private void OnDisable()
@@ -50,22 +64,22 @@ public class MatchmakerClient : MonoBehaviour
     {
         await ClientSignIn(serviceProfileName);
         await AuthenticationService.Instance.SignInAnonymouslyAsync(); // CHANGE THIS TO USERNAME AND PASSWORD AT A LATER TIME
-        
+
     }
 
     private async Task ClientSignIn(string serviceProfileName /* = null*/)
     {
-        
+
         var initOptions = new InitializationOptions();
 
         if (serviceProfileName != null)
         {
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             serviceProfileName = $"{serviceProfileName}{GetCloneNumberSuffix()}";
-            #endif
+#endif
             Debug.Log($"serviceProfileName: {serviceProfileName}");
-            
-            
+
+
             //var initOptions = new InitializationOptions();
             initOptions.SetProfile(serviceProfileName);
             await UnityServices.InitializeAsync(initOptions);
@@ -73,12 +87,12 @@ public class MatchmakerClient : MonoBehaviour
         }
         else
         {
-            
+
             await UnityServices.InitializeAsync();
         }
         Debug.Log($"Signed In Anonymously as {serviceProfileName}({PlayerID()})");
-        
-        
+
+
     }
 
     private string PlayerID()
@@ -86,7 +100,7 @@ public class MatchmakerClient : MonoBehaviour
         return AuthenticationService.Instance.PlayerId;
     }
 
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
     private string GetCloneNumberSuffix()
     {
         {
@@ -100,38 +114,84 @@ public class MatchmakerClient : MonoBehaviour
             return projectCloneSuffix;
         }
     }
-    #endif
+#endif
 
     public void StartClient()
     {
 
-        CreateATicket();
+        CreateATicket(playersFromLobby);
     }
 
-    private async void CreateATicket()
-    {
-        var options = new CreateTicketOptions("ACBMultiplayerMode");
 
-        var players = new List<Player>
+
+    public async void CreateATicket()
+    {
+
+        //var lobbyPlayers = clientLobbyInstance.GetPlayers();
+        var options = new CreateTicketOptions("ACBMultiplayerMode");
+        var players = new List<Player>();
+
+        foreach (string player in playersFromLobby)
+        {
+            players.Add(new Player(player));
+        }
+
+
+
+
+        /*var players = new List<Player>
         {
             new Player(
                 PlayerID()
 
                 )
-        };
+        };*/
+
+        //var lobbyPlayers = clientLobbyInstance.GetPlayers();
+
+        //var players = lobbyPlayers.Select(lobbyPlayer => new Unity.Services.Matchmaker.Models.Player(lobbyPlayer.Id)).ToList();
+
+        //var players = lobbyPlayers;
 
 
         Debug.Log($"Players in ticket: \n");
-        for(int i = 0; i < players.Count; i++)
+        foreach (var player in players)
         {
-            Debug.Log($"{players.ToArray()[i]}\n");
+            Debug.Log($"Player ID: {player.Id}");
         }
+
 
         var ticketResponse = await MatchmakerService.Instance.CreateTicketAsync(players, options);
         _ticketId = ticketResponse.Id;
         Debug.Log($"Ticket ID: {_ticketId}");
         PollTicketStatus();
-        
+
+    }
+
+    public async void CreateATicket(List<string> lobbyPlayers)
+    {
+
+        var options = new CreateTicketOptions("ACBMultiplayerMode");
+        var players = new List<Player>();
+
+        // Convert each player ID to a Player object and add it to the list of players
+        foreach (var playerID in lobbyPlayers)
+        {
+            players.Add(new Player(playerID));
+        }
+
+        Debug.Log("Players in ticket:");
+        foreach (var player in players)
+        {
+            Debug.Log($"Player ID: {player.Id}");
+        }
+
+
+        var ticketResponse = await MatchmakerService.Instance.CreateTicketAsync(players, options);
+        _ticketId = ticketResponse.Id;
+        Debug.Log($"Ticket ID: {_ticketId}");
+        PollTicketStatus();
+
     }
 
     private async void PollTicketStatus()
@@ -147,11 +207,11 @@ public class MatchmakerClient : MonoBehaviour
             if (ticketStatus.Type == typeof(MultiplayAssignment))
             {
                 multiplayAssignment = ticketStatus.Value as MultiplayAssignment;
-                
+
             }
             switch (multiplayAssignment?.Status)
             {
-                
+
                 case StatusOptions.Found:
                     gotAssignment = true;
                     TicketAssigned(multiplayAssignment);
@@ -180,37 +240,25 @@ public class MatchmakerClient : MonoBehaviour
 
     private void TicketAssigned(MultiplayAssignment assignment)
     {
+        //NetworkManager.Singleton.SceneManager.SetClientSynchronizationMode(LoadSceneMode.Single);
         Debug.Log($"Ticket Assigned: {assignment.Ip}:{assignment.Port}");
-        NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(assignment.Ip, (ushort)assignment.Port);
-        Lobbies.Instance.GetLobbyAsync(assignment.Ip);
+        //NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(assignment.Ip, (ushort)assignment.Port);
+        OnServerInfoReceived?.Invoke(assignment.Ip, (int)assignment.Port, true);
+
+        //NetworkManager.Singleton.StartClient();
         
-        NetworkManager.Singleton.StartClient();
-        NetworkManager.Singleton.SceneManager.LoadScene("Game View", LoadSceneMode.Single);
 
-        //UnityEngine.SceneManagement.SceneManager.LoadScene("Game View");
+        foreach (string playerID in playersFromLobby)
+        {
+            NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(assignment.Ip, (ushort)assignment.Port);
+            NetworkManager.Singleton.StartClient();
+        }
 
-       // OnTicketAssigned();
-       
-
-       
-
-
-
-       //SceneManager.LoadScene("Game View", LoadSceneMode.Additive);
-        //SceneManager.LoadSceneAsync("Game View");
-        //SceneManager.SetActiveScene(SceneManager.GetSceneByName("Game View"));
-        //SceneManager.UnloadSceneAsync("Game_Options");
-        //LoadPlayerIcon(playerNumber);
-        //SceneManager.LoadSceneAsync("Game View");
-
-        //Scene nextscene = SceneManager.GetSceneByName("Game View");
-        //SceneManager.SetActiveScene(SceneManager.GetSceneByName("Game View"));
-        //SceneManager.UnloadSceneAsync("Game_Options");
-       
-
+        //NetworkManager.Singleton.StartClient();
+        //NetworkManager.Singleton.SceneManager.LoadScene("Game View", LoadSceneMode.Single);
     }
 
-    
+
 
     /*private void LoadPlayerIcon(int playerNumber)
     {
@@ -226,7 +274,21 @@ public class MatchmakerClient : MonoBehaviour
         //Debug.Log($"{NetworkManager.Singleton.ConnectedClientsList}");
         //NetworkManager.Singleton.SceneManager.LoadScene("Game View", LoadSceneMode.Additive);
         //SceneManager.LoadScene("Game View");
-        
+
+    }
+
+
+
+    private void ReceiveLobbyInfo(List<string> lobbyPlayers)
+    {
+        playersFromLobby = lobbyPlayers;
+        Debug.Log("Lobby players:");
+        foreach (string playerID in playersFromLobby)
+        {
+            Debug.Log(playerID);
+        }
+
+
     }
 
     [Serializable]
@@ -234,5 +296,4 @@ public class MatchmakerClient : MonoBehaviour
     {
         public int Skill;
     }
-
 }

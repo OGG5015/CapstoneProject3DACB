@@ -5776,6 +5776,7 @@ MonoBehaviour:
   isDragging: 0
   dj: {fileID: 0}
   isPlanStage: 1
+  shop: {fileID: 0}
 --- !u!54 &291727291
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -7574,6 +7575,7 @@ MonoBehaviour:
     m_Bits: 1
   <unitBench>k__BackingField: {fileID: 391273696}
   explosionTest: {fileID: 0}
+  shop: {fileID: 0}
 --- !u!1001 &393428194
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -26760,6 +26762,7 @@ MonoBehaviour:
     m_Bits: 0
   <unitBench>k__BackingField: {fileID: 0}
   explosionTest: {fileID: 0}
+  shop: {fileID: 0}
 --- !u!23 &1243035423
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -34291,16 +34294,16 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1594273868}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 116}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 119112771}
   m_Father: {fileID: 2028119457}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 232.4, y: 172}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1594273870
@@ -38368,16 +38371,16 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1768644688}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 108185764}
   m_Father: {fileID: 2028119457}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -239, y: -144}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1768644690

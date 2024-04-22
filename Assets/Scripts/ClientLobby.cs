@@ -6,8 +6,10 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using TMPro;
 using Unity.Multiplayer.Samples.Utilities;
+using Unity.Multiplayer.Samples.Utilities.ClientAuthority;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
+using Unity.Networking.Transport;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Lobbies;
@@ -131,7 +133,7 @@ public class ClientLobby : MonoBehaviour
         try
         {
             string playerNameLobby = AuthenticationService.Instance.PlayerName;
-            string lobbyName = $"{playerName}Lobby";
+            string lobbyName = $"{playerNameLobby}Lobby";
             int maxPlayers = 4;
 
             CreateLobbyOptions createLobbyOptions = new CreateLobbyOptions
@@ -142,7 +144,7 @@ public class ClientLobby : MonoBehaviour
                     {"GameMode", new DataObject(DataObject.VisibilityOptions.Public, "")}
                 }*/
             };
-            Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers);
+            Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, createLobbyOptions);
 
             hostLobby = lobby;
             joinedLobby = hostLobby;
@@ -166,8 +168,7 @@ public class ClientLobby : MonoBehaviour
     {
         OnLobbyInfoReceived?.Invoke(GetLobbyPlayers());
         MatchmakerClientInstance?.Invoke();
-
-
+        
     }
     public List<string> GetLobbyPlayers()
     {
@@ -190,16 +191,30 @@ public class ClientLobby : MonoBehaviour
         else
         {
             Debug.Log($"Received server info: IP Address - {ipAddress}, Port - {port}");
-
-            foreach (Player player in joinedLobby.Players)
+            
+            //ShareNetworkInfoClientRpc(ipAddress, port);
+            /*foreach (Player player in joinedLobby.Players)
             {
                 if (!IsLobbyHost())
                 {
-                    NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(ipAddress, (ushort)port);
+                    
+                    var approvalCallback = NetworkManager.Singleton.ConnectionApprovalCallback;
+                    Debug.Log(approvalCallback);
+                    ShareNetworkInfoClientRpc(ipAddress, port);
+                    //NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(ipAddress, (ushort)port, "0.0.0.0");
                 }
-            }
+            }*/
+            
         }
     }
+
+    /*[ClientRpc]
+    private void ShareNetworkInfoClientRpc(string ipAddress, int port)
+    {
+        if(IsLobbyHost()) return;
+
+        NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(ipAddress, (ushort) port, "0.0.0.0");
+    }*/
 
 
     private async void ListLobbies()
@@ -381,9 +396,6 @@ public class ClientLobby : MonoBehaviour
             Debug.Log($"There was an error deleting the lobby game in ClientLobby DeleteLobby(): {e}");
         }
     }
-
-
-
 
     /*static async Task<Player> GetPlayerFromAnonymousLoginAsync()
     {

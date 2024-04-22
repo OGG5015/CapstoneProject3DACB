@@ -78,7 +78,7 @@ public class ServerStartUp : MonoBehaviour
 
     private void StartServer()
     {
-        NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(InternalServerIP, _serverPort);
+        NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(InternalServerIP, _serverPort, "0.0.0.0");
         NetworkManager.Singleton.StartServer();
         NetworkManager.Singleton.OnClientDisconnectCallback += ClientDisconnected;
         Debug.Log($"Connected clients: {NetworkManager.Singleton.ConnectedClients.Count}.\nMax players: {ConnectionApprovalHandler.MaxPlayers}");

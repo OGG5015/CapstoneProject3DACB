@@ -20,15 +20,10 @@ using Unity.Services.Samples;
 using Unity.Services.Lobbies;
 using Unity.Services.Multiplay;
 using Unity.VisualScripting;
+using UnityEngine.Networking;
+using Unity.Netcode.Editor.Configuration;
 
 //using UnityEditor.PackageManager;
-
-
-
-
-
-
-
 //using Unity.Netcode.Editor;
 
 
@@ -53,6 +48,7 @@ public class MatchmakerClient : MonoBehaviour
         ServerStartUp.ClientInstance += SignIn;
         ClientLobby.MatchmakerClientInstance += StartClient;
         ClientLobby.OnLobbyInfoReceived += ReceiveLobbyInfo;
+        DontDestroyOnLoad(PrefabToSpawn);
     }
 
     private void OnDisable()
@@ -119,7 +115,8 @@ public class MatchmakerClient : MonoBehaviour
     public void StartClient()
     {
 
-        CreateATicket(playersFromLobby);
+        //CreateATicket(playersFromLobby);
+        CreateATicket();
     }
 
 
@@ -129,23 +126,20 @@ public class MatchmakerClient : MonoBehaviour
 
         //var lobbyPlayers = clientLobbyInstance.GetPlayers();
         var options = new CreateTicketOptions("ACBMultiplayerMode");
-        var players = new List<Player>();
+        //var players = new List<Player>();
 
-        foreach (string player in playersFromLobby)
+        /*foreach (string player in playersFromLobby)
         {
             players.Add(new Player(player));
-        }
+        }*/
 
-
-
-
-        /*var players = new List<Player>
+        var players = new List<Player>
         {
             new Player(
                 PlayerID()
 
                 )
-        };*/
+        };
 
         //var lobbyPlayers = clientLobbyInstance.GetPlayers();
 
@@ -238,25 +232,45 @@ public class MatchmakerClient : MonoBehaviour
         } while (!gotAssignment);
     }
 
-    private void TicketAssigned(MultiplayAssignment assignment)
+    
+
+    private async void TicketAssigned(MultiplayAssignment assignment)
     {
         //NetworkManager.Singleton.SceneManager.SetClientSynchronizationMode(LoadSceneMode.Single);
         Debug.Log($"Ticket Assigned: {assignment.Ip}:{assignment.Port}");
-        //NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(assignment.Ip, (ushort)assignment.Port);
+        NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(assignment.Ip, (ushort)assignment.Port);
         OnServerInfoReceived?.Invoke(assignment.Ip, (int)assignment.Port, true);
+        Debug.Log(assignment.MatchId);
 
         //NetworkManager.Singleton.StartClient();
+
+
+        /*foreach (string playerID in playersFromLobby)
+        {
+            NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(assignment.Ip, (ushort)assignment.Port, "0.0.0.0");
+        }*/
+        NetworkManager.Singleton.StartClient();
+        await Task.Delay(2000);
+
+        //Scene currScene = SceneManager.GetActiveScene();
+        
+        Scene nextScene = SceneManager.GetSceneByName("Game View");
+
+        //string sceneName = NetworkManager.Singleton. <= 1 ? "Game View" : "Game_View";
+        SceneManager.LoadScene("Game View", LoadSceneMode.Single);
+        
+        //  IS BEING DESTROYED BECAUSE THIS SCRIPT IS ON GAMEOPTIONS WHICH IS NO LONGER ACTIVE SCENE AFTER THE LOAD SCENE
+        //  MAKE SCRIPT NOT DESTROYABLE OR MAKE GAME OBJECT NOT DESTROYABLE.
+        
+        //SceneManager.UnloadSceneAsync(SceneManager.GetSceneByName("Game_Options"));
+       // SceneManager.SetActiveScene(nextScene);
         
 
-        foreach (string playerID in playersFromLobby)
-        {
-            NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(assignment.Ip, (ushort)assignment.Port);
-            NetworkManager.Singleton.StartClient();
-        }
 
-        //NetworkManager.Singleton.StartClient();
         //NetworkManager.Singleton.SceneManager.LoadScene("Game View", LoadSceneMode.Single);
     }
+
+
 
 
 

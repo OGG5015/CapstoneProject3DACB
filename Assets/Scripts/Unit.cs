@@ -9,19 +9,20 @@ public class Unit : MonoBehaviour
     private int nearX;
     private int nearY;
 
-    private int maxHp;
+    [field: SerializeField] public int maxHp;
     private int currHp;
-    private int str;
-    private int mag;
-    private int def;
-    private int spr;
-    private int spd;
+    [field: SerializeField] public int str;
+    [field: SerializeField] public int mag;
+    [field: SerializeField] public int def;
+    [field: SerializeField] public int spr;
+    [field: SerializeField] public int spd;
     private int tier;
-    private int range;
+    [field: SerializeField] public int range;
     private bool phys;
     private string trait1;
     private string trait2;
     private int team;
+    public int price;
     //private ArrayList traitList;
 
     public Unit(int maxHp, int str, int mag, int def, int spr, int spd, int tier, int range, bool phys, string trait1, string trait2, int team)

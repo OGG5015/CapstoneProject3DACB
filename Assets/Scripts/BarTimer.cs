@@ -15,13 +15,14 @@ public class BarTimer : MonoBehaviour
     public DragAndDrop DnD;
     public Material dayM, nightM;
     public ReflectionProbe rp;
-    public UnitStore shop;
+    public UIStore shop;
+    public GameObject barricade;
 
     private void Start()
     {
         timerIsRunning = true;
         DnDScriptGuys = GameObject.FindGameObjectsWithTag("Unit");
-        shop = GameObject.Find("UnitStore").GetComponent<UnitStore>();
+        shop = GameObject.Find("UIStore").GetComponent<UIStore>();
     }
     void Update()
     {
@@ -72,6 +73,7 @@ public class BarTimer : MonoBehaviour
                 RenderSettings.fogColor = new Color((float)(0.98), (float)(0.55), (float)(0.32));
                 DynamicGI.UpdateEnvironment();
                 rp.RenderProbe();
+                barricade.SetActive(true);
 
                 ////// Stop Units from moving //////
                 foreach (GameObject d in DnDScriptGuys)
@@ -87,13 +89,14 @@ public class BarTimer : MonoBehaviour
                 stageName.text = "Planning Stage";
 
                 ////// Fill Store/Bench //////
-                shop.FillUnitBench();
+                shop.ResetStore();
 
                 ////// Change Skybox, Reflections and Fog //////
                 RenderSettings.skybox = nightM;
                 RenderSettings.fogColor = new Color((float)(0.64), (float)(0.41), (float)(0.64));
                 DynamicGI.UpdateEnvironment();
                 rp.RenderProbe();
+                barricade.SetActive(false);
 
                 ////// Let Units Move //////
                 foreach (GameObject d in DnDScriptGuys)

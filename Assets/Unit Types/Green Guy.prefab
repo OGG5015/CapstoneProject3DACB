@@ -14,7 +14,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 74a818f86d566924986d14902abdf339, type: 2}
     - target: {fileID: 7047865522467765032, guid: ba7ae8088db3f3a4cbf49a03897f08e6, type: 3}
       propertyPath: m_Name
-      value: RPG-Character (1) Variant 1
+      value: Green Guy
       objectReference: {fileID: 0}
     - target: {fileID: 7047865522468054792, guid: ba7ae8088db3f3a4cbf49a03897f08e6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -59,5 +59,33 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7047865522467765032, guid: ba7ae8088db3f3a4cbf49a03897f08e6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -4039445379561937308}
   m_SourcePrefab: {fileID: 100100000, guid: ba7ae8088db3f3a4cbf49a03897f08e6, type: 3}
+--- !u!1 &9002304830502859550 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7047865522467765032, guid: ba7ae8088db3f3a4cbf49a03897f08e6, type: 3}
+  m_PrefabInstance: {fileID: 2099118149970298934}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-4039445379561937308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9002304830502859550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 480ebf5dfe70f1b48b63c1403909f53d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHp: 200
+  str: 3
+  mag: 1
+  def: 4
+  spr: 3
+  spd: 1
+  range: 1
+  price: 5

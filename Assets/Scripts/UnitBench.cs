@@ -54,9 +54,4 @@ public class UnitBench : MonoBehaviour
         Gizmos.DrawLine(bottomRight, bottomLeft);
         Gizmos.DrawLine(bottomLeft, topLeft);
     }
-
-    public int GetWidth()
-    {
-        return Width;
-    }
 }

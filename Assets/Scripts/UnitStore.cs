@@ -14,7 +14,7 @@ public class UnitStore : MonoBehaviour
     private HexGrid hexgrid;
     //private UnitBench mindy;
     private Vector3 cellCenter;
-    bool[] isBenchPosFull;
+    public bool[] isBenchPosFull;
 
     void Start()
     {

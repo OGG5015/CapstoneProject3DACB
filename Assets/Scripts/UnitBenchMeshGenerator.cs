@@ -9,7 +9,7 @@ public class UnitBenchMeshGenerator : MonoBehaviour
     [field: SerializeField] public LayerMask gridLayer { get; private set; }
     [field: SerializeField] public UnitBench unitBench { get; private set; }
     public Transform explosionTest;
-    public UIStore shop;
+    public UnitStore shop;
 
     private void Awake()
     {
@@ -25,7 +25,7 @@ public class UnitBenchMeshGenerator : MonoBehaviour
 
     private void Start()
     {
-        shop = GameObject.Find("UIStore").GetComponent<UIStore>();
+        shop = GameObject.Find("UnitStore").GetComponent<UnitStore>();
     }
 
     private void OnEnable()

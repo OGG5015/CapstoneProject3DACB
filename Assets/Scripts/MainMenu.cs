@@ -1,16 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-    public void Start()
-    {
-        
-    }
     //Load Scene
     public void Play()
     {

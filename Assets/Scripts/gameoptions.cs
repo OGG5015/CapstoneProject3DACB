@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -23,20 +22,7 @@ public class gameoptions : MonoBehaviour
         SceneManager.LoadScene("Countdown");//Game View
     }
 
-    public void multiplayer()
-    {
-        
-    }
-
-    public void StartServer()
-    {
-        NetworkManager.Singleton.StartServer();
-    }
-
-    public void StartClient()
-    {
-        NetworkManager.Singleton.StartClient();
-    }
-
     
+
+
 }

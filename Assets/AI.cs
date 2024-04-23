@@ -230,6 +230,50 @@ public class AI : MonoBehaviour{
 
     }
 
+    /*
+     private void SnapToUnitBench()
+    {
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+        {
+            unitBench = hit.collider.GetComponentInParent<HexGrid>().GetComponentInChildren<UnitBench>();
+
+            if (unitBench != null)
+            {
+
+                Vector3 benchOrigin = new Vector3(
+                    unitBench.transform.position.x - (unitBench.Width) * unitBench.SquareSize / 2f,
+                    unitBench.transform.position.y,
+                    unitBench.transform.position.z
+                );
+
+                Vector3 localPoint = hit.point;
+                float distanceFromOriginX = localPoint.x - benchOrigin.x;
+                int cellIndex = Mathf.FloorToInt(distanceFromOriginX / unitBench.SquareSize);
+
+                float cellCenterX = benchOrigin.x + (cellIndex + 0.5f) * unitBench.SquareSize;
+                float cellCenterZ = unitBench.transform.position.z;
+                Vector3 cellCenter = new Vector3(cellCenterX, unitBench.transform.position.y, cellCenterZ);
+
+                transform.position = cellCenter;
+                Debug.Log("Snapped to: " + cellCenter);
+            }
+            else
+            {
+                Debug.Log("Unit bench is null");
+            }
+        }
+        else
+        {
+            Debug.Log("Raycast hit nothing");
+        }
+
+    }
+     */
+
 
     //Move moves the unit to an adjacent tile, updating x & y as well
     void Move(int unit, int enemy){ 
@@ -273,6 +317,35 @@ public class AI : MonoBehaviour{
         }
         return closest;
     }
+
+    /*
+     * public GameObject FindClosestEnemy()
+    {
+        GameObject[] gos;
+
+        if (gameObject.tag == "T1") {
+            gos = GameObject.FindGameObjectsWithTag("T2");
+        }
+        else
+        {
+            gos = GameObject.FindGameObjectsWithTag("T1");
+        }
+        GameObject closest = null;
+        float distance = Mathf.Infinity;
+        Vector3 position = transform.position;
+        foreach (GameObject go in gos)
+        {
+            Vector3 diff = go.transform.position - position;
+            float curDistance = diff.sqrMagnitude;
+            if (curDistance < distance)
+            {
+                closest = go;
+                distance = curDistance;
+            }
+        }
+        return closest;
+    }
+     */
 
     bool inRange() {
 

@@ -14,6 +14,9 @@ public class DragAndDrop : MonoBehaviour
     Vector3 PrevPos;
     public SFXPlaying dj;
 
+    // NEW CODE
+    
+    // END NEW CODE
     private Vector3 GetMousePos()
     {
         return Camera.main.WorldToScreenPoint(transform.position);
@@ -36,7 +39,6 @@ public class DragAndDrop : MonoBehaviour
             Vector3 newPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition - mousePosition);
             newPosition.y = transform.position.y;
             transform.position = newPosition;
-
         }
     }
 
@@ -46,6 +48,8 @@ public class DragAndDrop : MonoBehaviour
 
         isDragging = false;
         dj.PlayDrop();
+
+        GetComponent<PlayerNetwork>().unitPosition.Value = transform.position;
     }
 
     private void SnapToHexOrUnitBench()
@@ -166,6 +170,8 @@ public class DragAndDrop : MonoBehaviour
     {
         transform.position = PrevPos;
     }
+
+    
 
 }
 

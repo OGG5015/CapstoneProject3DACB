@@ -50,12 +50,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4240930300901675388, guid: 0bd3bbead16e9854f94731840b63d257, type: 3}
       propertyPath: m_Name
-      value: Red Guy
+      value: None Guy
       objectReference: {fileID: 0}
     - target: {fileID: 8494738901422966601, guid: 0bd3bbead16e9854f94731840b63d257, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: d4aaae9cdad212a4d97935d49c18cf51, type: 2}
+      objectReference: {fileID: 2100000, guid: ad8c2bee857aaca4dbcf348b7e988a44, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -81,11 +81,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 480ebf5dfe70f1b48b63c1403909f53d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHp: 50
-  str: 4
-  mag: 3
-  def: 2
-  spr: 1
-  spd: 4
-  range: 2
-  price: 3
+  maxHp: 0
+  str: 0
+  mag: 0
+  def: 0
+  spr: 0
+  spd: 0
+  range: 0
+  price: 0

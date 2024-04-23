@@ -14,12 +14,12 @@ public class DragAndDrop : MonoBehaviour
     Vector3 PrevPos;
     public SFXPlaying dj;
     public bool isPlanStage = true;
-    public UnitStore shop;
+    public UIStore shop;
 
     private void Start()
     {
         dj = GameObject.Find("sfx").GetComponent<SFXPlaying>();
-        shop = GameObject.Find("UnitStore").GetComponent<UnitStore>();
+        shop = GameObject.Find("UIStore").GetComponent<UIStore>();
     }
 
     private Vector3 GetMousePos()
@@ -164,8 +164,8 @@ public class DragAndDrop : MonoBehaviour
 
                 PrevPos = transform.position;
 
-                shop.isBenchPosFull[cellIndex] = true;
-                Debug.Log("Bench is " + shop.isBenchPosFull[cellIndex] + " at " + cellIndex);
+                shop.isBenchPosFull[cellIndex - 2] = true;
+                Debug.Log("Bench is " + shop.isBenchPosFull[cellIndex - 2] + " at " + (cellIndex - 2));
             }
             else
             {

@@ -8,6 +8,8 @@ TagManager:
   - GameObject
   - UnitBench
   - Unit
+  - Collide
+  - Shelf
   layers:
   - Default
   - TransparentFX

@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4240930300901675388, guid: 0bd3bbead16e9854f94731840b63d257, type: 3}
       propertyPath: m_Name
-      value: Red Guy
+      value: RPG-Character Variant
       objectReference: {fileID: 0}
     - target: {fileID: 8494738901422966601, guid: 0bd3bbead16e9854f94731840b63d257, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -59,33 +59,5 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4240930300901675388, guid: 0bd3bbead16e9854f94731840b63d257, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1737001170486469328}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0bd3bbead16e9854f94731840b63d257, type: 3}
---- !u!1 &2676419587962262852 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4240930300901675388, guid: 0bd3bbead16e9854f94731840b63d257, type: 3}
-  m_PrefabInstance: {fileID: 2305353507429680184}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1737001170486469328
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2676419587962262852}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 480ebf5dfe70f1b48b63c1403909f53d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHp: 50
-  str: 4
-  mag: 3
-  def: 2
-  spr: 1
-  spd: 4
-  range: 2
-  price: 3

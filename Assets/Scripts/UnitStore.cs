@@ -1,4 +1,4 @@
-/*using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Unity.VisualScripting;
@@ -14,7 +14,7 @@ public class UnitStore : MonoBehaviour
     private HexGrid hexgrid;
     //private UnitBench mindy;
     private Vector3 cellCenter;
-    public bool[] isBenchPosFull;
+    bool[] isBenchPosFull;
 
     void Start()
     {
@@ -38,8 +38,8 @@ public class UnitStore : MonoBehaviour
         {
 
             Vector3 benchOrigin = new Vector3(
-                mindy.transform.position.x - (mindy.Width + (mindy.SquareSize / 2)) * mindy.SquareSize / /*2f*//* mindy.Width,
-    /*            mindy.transform.position.y,
+                mindy.transform.position.x - (mindy.Width + (mindy.SquareSize / 2)) * mindy.SquareSize / /*2f*/ mindy.Width,
+                mindy.transform.position.y,
                 mindy.transform.position.z
             );
 
@@ -99,4 +99,4 @@ public class UnitStore : MonoBehaviour
 
     }
         
-}*/
+}

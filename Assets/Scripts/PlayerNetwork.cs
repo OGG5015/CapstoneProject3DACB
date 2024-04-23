@@ -9,12 +9,12 @@ public class PlayerNetwork : NetworkBehaviour
     private NetworkVariable<int> randomNumber = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     public NetworkVariable<Vector3> unitPosition = new NetworkVariable<Vector3>();
 
-    /*public override void OnNetworkSpawn()
+    public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
         //Initialize();
-    }*/
-    public override void OnNetworkSpawn()
+    }
+    /*public override void OnNetworkSpawn()
     {
         //base.OnNetworkSpawn();
         //Initialize();
@@ -40,9 +40,9 @@ public class PlayerNetwork : NetworkBehaviour
     private void OnDestroy()
     {
         unitPosition.OnValueChanged -= OnUnitPositionChanged;
-    }
+    }*/
 
-    /*private void Update()
+    private void Update()
     {
         //Debug.Log(OwnerClientId + "; randomNumber" + randomNumber.Value);
         if(!IsOwner) return;
@@ -60,5 +60,5 @@ public class PlayerNetwork : NetworkBehaviour
 
         float moveSpeed = 3f;
         transform.position += moveDir *moveSpeed*Time.deltaTime;
-    }*/
+    }
 }

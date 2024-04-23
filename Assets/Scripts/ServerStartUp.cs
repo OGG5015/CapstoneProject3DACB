@@ -33,6 +33,7 @@ public class ServerStartUp : MonoBehaviour
     private IServerEvents _serverEvents;
     private bool _backfilling = false;
     //MatchmakingResults payload;
+    public enum RoomType { Room1, Room2 }
 
 
 
@@ -200,7 +201,7 @@ public class ServerStartUp : MonoBehaviour
         _localBackfillTicket = new BackfillTicket { Id = payload.MatchProperties.BackfillTicketId, Properties = backfillProperties };
         await BeginBackfilling(payload);
     }
-
+    
     private async Task BeginBackfilling(MatchmakingResults payload)
     {
         Debug.Log("Beginning Task BeginBackFilling");
@@ -230,6 +231,7 @@ public class ServerStartUp : MonoBehaviour
             Debug.Log("_localBackfillTicket.id:" + _localBackfillTicket);
 
         }
+        SendRoomAssignmentToClient(NetworkManager.Singleton.LocalClientId, GetRoomAssignmentForClient());
 
         _backfilling = true;
 #pragma warning disable 4014
@@ -258,6 +260,28 @@ public class ServerStartUp : MonoBehaviour
         _backfilling = false;
     }
 
+    // Helper method to determine room assignment (replace with your logic)
+    private RoomType GetRoomAssignmentForClient()
+    {
+        if (NetworkManager.Singleton.ConnectedClients.Count % 2 == 0)
+        {
+            return RoomType.Room2;
+        }
+        else
+        {
+            return RoomType.Room1;
+        }
+    }
+
+    private RoomType SendRoomAssignmentToClient(ulong clientId, RoomType roomAssignment)
+    {
+        int roomAssignmentInt = (int)roomAssignment;
+
+        NetworkManager.Singleton.GetComponent<MatchmakerClient>().RpcReceiveRoomAssignment(clientId, roomAssignmentInt);
+
+        return roomAssignment;
+    }
+
     private async void ClientDisconnected(ulong clientId)
     {
 
@@ -283,8 +307,6 @@ public class ServerStartUp : MonoBehaviour
             return false;
         }
     }
-
-
 
     private void Dispose()
     {

@@ -21,8 +21,10 @@ using Unity.Services.Lobbies;
 using Unity.Services.Multiplay;
 using Unity.VisualScripting;
 using UnityEngine.Networking;
-using Unity.Netcode.Editor.Configuration;
+//using Unity.Netcode.Editor.Configuration;
 using Unity.Networking.Transport;
+using static ServerStartUp;
+
 
 
 //using UnityEditor.PackageManager;
@@ -43,6 +45,11 @@ public class MatchmakerClient : MonoBehaviour
     private List<string> playersFromLobby;
     private delegate void TicketStatusDelegate(bool ticketStatus);
     private static event TicketStatusDelegate OnTicketStatusReceived;
+    public GameObject startingCanvas;
+    public GameObject room1Canvas;
+    public Canvas room2Canvas;
+
+
 
 
     private void OnEnable()
@@ -50,7 +57,6 @@ public class MatchmakerClient : MonoBehaviour
         ServerStartUp.ClientInstance += SignIn;
         ClientLobby.MatchmakerClientInstance += StartClient;
         ClientLobby.OnLobbyInfoReceived += ReceiveLobbyInfo;
-        DontDestroyOnLoad(PrefabToSpawn);
     }
 
     private void OnDisable()
@@ -234,7 +240,8 @@ public class MatchmakerClient : MonoBehaviour
         } while (!gotAssignment);
     }
 
-    
+
+    RoomType roomassignment;
 
     private async void TicketAssigned(MultiplayAssignment assignment)
     {
@@ -246,7 +253,8 @@ public class MatchmakerClient : MonoBehaviour
 
         //NetworkManager.Singleton.StartClient();
 
-
+        //RoomType roomAssignment = GetRoomAssignmentFromServer(); // Implement this method to receive room assignment from server
+        //ReactToRoomAssignment(roomAssignment);
         /*foreach (string playerID in playersFromLobby)
         {
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(assignment.Ip, (ushort)assignment.Port, "0.0.0.0");
@@ -254,25 +262,76 @@ public class MatchmakerClient : MonoBehaviour
         NetworkManager.Singleton.StartClient();
         await Task.Delay(2000);
 
+        RpcReceiveRoomAssignment(NetworkManager.Singleton.LocalClientId, (int) roomassignment);
+        //LoadRoom1();
+
+
         //Scene currScene = SceneManager.GetActiveScene();
-        
-        Scene nextScene = SceneManager.GetSceneByName("Game View");
+
+        //Scene nextScene = SceneManager.GetSceneByName("Game View");
 
         //string sceneName = NetworkManager.Singleton. <= 1 ? "Game View" : "Game_View";
-        SceneManager.LoadScene("Game View", LoadSceneMode.Single);
-        
+        //SceneManager.LoadScene("Game View", LoadSceneMode.Single);
+
         //  IS BEING DESTROYED BECAUSE THIS SCRIPT IS ON GAMEOPTIONS WHICH IS NO LONGER ACTIVE SCENE AFTER THE LOAD SCENE
         //  MAKE SCRIPT NOT DESTROYABLE OR MAKE GAME OBJECT NOT DESTROYABLE.
-        
+
         //SceneManager.UnloadSceneAsync(SceneManager.GetSceneByName("Game_Options"));
-       // SceneManager.SetActiveScene(nextScene);
-        
+        // SceneManager.SetActiveScene(nextScene);
+
 
 
         //NetworkManager.Singleton.SceneManager.LoadScene("Game View", LoadSceneMode.Single);
     }
 
-    
+    /*private RoomType GetRoomAssignmentFromServer()
+    {
+        // Example: Assume server sends room assignment in a message
+        return RoomType.Room1; // Replace with logic to receive assignment from server
+    }*/
+
+    [ClientRpc]
+    public void RpcReceiveRoomAssignment(ulong clientId, int roomAssignmentInt)
+    {
+        RoomType roomAssignment = (RoomType)roomAssignmentInt;
+        Debug.Log($"RoomAssignment {roomAssignment}");
+
+        // React to the received room assignment
+        ReactToRoomAssignment(roomAssignment);
+    }
+
+    private void ReactToRoomAssignment(RoomType roomAssignment)
+    {
+        switch (roomAssignment)
+        {
+            case RoomType.Room1:
+                LoadRoom1();
+                break;
+            case RoomType.Room2:
+                LoadRoom2();
+                break;
+            default:
+                Debug.LogError("Invalid room assignment");
+                break;
+        }
+    }
+
+
+    private void LoadRoom1()
+    {
+        startingCanvas.SetActive(false);
+        room1Canvas.SetActive(true);
+        //NetworkManager.Instantiate(PrefabToSpawn, new Vector3(0f, 0f, 0f), Quaternion.identity);
+        var prefabInstance = Instantiate(PrefabToSpawn);
+        var instanceNetworkObject = prefabInstance.GetComponent<NetworkObject>();
+        instanceNetworkObject.Spawn();
+    }
+    private void LoadRoom2()
+    {
+        room2Canvas.enabled = true;
+    }
+
+
 
 
 

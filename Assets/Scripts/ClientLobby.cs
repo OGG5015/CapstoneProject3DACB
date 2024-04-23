@@ -15,9 +15,9 @@ using Unity.Services.Core;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using Unity.VisualScripting;
-using UnityEditor;
-using UnityEditor.MemoryProfiler;
-using UnityEditor.PackageManager.Requests;
+//using UnityEditor;
+//using UnityEditor.MemoryProfiler;
+//using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using UnityEngine.UI;
 

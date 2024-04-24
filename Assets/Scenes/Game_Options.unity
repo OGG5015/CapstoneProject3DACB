@@ -8707,7 +8707,7 @@ PrefabInstance:
       objectReference: {fileID: 637780106}
     - target: {fileID: 3721242166122303523, guid: 624c75379adc16346aa5782c95016b1a, type: 3}
       propertyPath: serviceProfileName
-      value: ogg5015
+      value: testprof
       objectReference: {fileID: 0}
     - target: {fileID: 3996288682774199460, guid: 624c75379adc16346aa5782c95016b1a, type: 3}
       propertyPath: m_fontSize
@@ -93784,10 +93784,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PrefabToSpawn: {fileID: 8857893062388518927, guid: ee891402e9f274741a81e16262d3ad27, type: 3}
-  serviceProfileName: ogg5015
+  serviceProfileName: testprof
   startingCanvas: {fileID: 1326133891}
   room1Canvas: {fileID: 1732235904}
-  room2Canvas: {fileID: 0}
+  room2Canvas: {fileID: 1902287340}
 --- !u!1001 &2128550632
 PrefabInstance:
   m_ObjectHideFlags: 0

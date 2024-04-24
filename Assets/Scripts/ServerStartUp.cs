@@ -231,7 +231,7 @@ public class ServerStartUp : MonoBehaviour
             Debug.Log("_localBackfillTicket.id:" + _localBackfillTicket);
 
         }
-        SendRoomAssignmentToClient(NetworkManager.Singleton.LocalClientId, GetRoomAssignmentForClient());
+        //SendRoomAssignmentToClient(NetworkManager.Singleton.LocalClientId, GetRoomAssignmentForClient());
 
         _backfilling = true;
 #pragma warning disable 4014
@@ -254,6 +254,7 @@ public class ServerStartUp : MonoBehaviour
                 return;
             }
             Debug.Log($"Connected clients: {NetworkManager.Singleton.ConnectedClients.Count}.\nMax players: {ConnectionApprovalHandler.MaxPlayers}");
+            //SendRoomAssignmentToClient(NetworkManager.Singleton.LocalClientId, GetRoomAssignmentForClient());
             await Task.Delay(_ticketChecksMs);
         }
 

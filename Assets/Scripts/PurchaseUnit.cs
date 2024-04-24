@@ -148,7 +148,7 @@ public class PurchaseUnit : MonoBehaviour
                     Debug.Log("Summon Red Guy");
                     dj.PlayBuy();
                 }
-                else if (portraitX == portraitG)
+                else if (portraitX == portraitG && store.cash > unitG.GetComponent<Unit>().price)
                 {
                     unitCell = new Vector3(cellCenterX + (mindy.SquareSize * index2), mindy.transform.position.y, cellCenterZ);
                     u1 = Instantiate(unitG, unitCell, Quaternion.identity);
@@ -161,7 +161,7 @@ public class PurchaseUnit : MonoBehaviour
                     Debug.Log("Summon Green Guy");
                     dj.PlayBuy();
                 }
-                else if (portraitX == portraitB)
+                else if (portraitX == portraitB && store.cash > unitB.GetComponent<Unit>().price)
                 {
                     unitCell = new Vector3(cellCenterX + (mindy.SquareSize * index2), mindy.transform.position.y, cellCenterZ);
                     u1 = Instantiate(unitB, unitCell, Quaternion.identity);

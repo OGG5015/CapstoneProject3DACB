@@ -22,6 +22,12 @@ public class PurchaseUnit : MonoBehaviour
     public int index;
     public GameObject button;
     public UIStore store;
+    public SFXPlaying dj;
+
+    void Start()
+    {
+        dj = GameObject.Find("sfx").GetComponent<SFXPlaying>();
+    }
 
     public void DisplayStats()
     {
@@ -53,35 +59,35 @@ public class PurchaseUnit : MonoBehaviour
 
         temp = GameObject.Find("HPText");
         temp2 = temp.GetComponent<TMP_Text>();
-        temp2.text = unitX.GetComponent<Unit>().maxHp.ToString();
+        temp2.text = unitX.GetComponent<AI>().GetMaxHP().ToString();
 
         temp = GameObject.Find("StrengthText");
         temp2 = temp.GetComponent<TMP_Text>();
-        temp2.text = unitX.GetComponent<Unit>().str.ToString();
+        temp2.text = unitX.GetComponent<AI>().str.ToString();
 
         temp = GameObject.Find("MagicText");
         temp2 = temp.GetComponent<TMP_Text>();
-        temp2.text = unitX.GetComponent<Unit>().mag.ToString();
+        temp2.text = unitX.GetComponent<AI>().mag.ToString();
 
         temp = GameObject.Find("DefenceText");
         temp2 = temp.GetComponent<TMP_Text>();
-        temp2.text = unitX.GetComponent<Unit>().def.ToString();
+        temp2.text = unitX.GetComponent<AI>().def.ToString();
 
         temp = GameObject.Find("SpiritText");
         temp2 = temp.GetComponent<TMP_Text>();
-        temp2.text = unitX.GetComponent<Unit>().spr.ToString();
+        temp2.text = unitX.GetComponent<AI>().spr.ToString();
 
         temp = GameObject.Find("SpeedText");
         temp2 = temp.GetComponent<TMP_Text>();
-        temp2.text = unitX.GetComponent<Unit>().spd.ToString();
+        temp2.text = unitX.GetComponent<AI>().spd.ToString();
 
         temp = GameObject.Find("RangeText");
         temp2 = temp.GetComponent<TMP_Text>();
-        temp2.text = unitX.GetComponent<Unit>().range.ToString();
+        temp2.text = unitX.GetComponent<AI>().range.ToString();
 
         temp = GameObject.Find("PriceText");
         temp2 = temp.GetComponent<TMP_Text>();
-        temp2.text = unitX.GetComponent<Unit>().price.ToString();
+        temp2.text = unitX.GetComponent<AI>().price.ToString();
 
     }
 
@@ -136,10 +142,11 @@ public class PurchaseUnit : MonoBehaviour
                     u1.transform.localScale = new Vector3(5f, 5f, 5f);
                     u1.transform.parent = GameObject.Find("Grid").transform;
 
-                    store.cash = store.cash - unitR.GetComponent<Unit>().price;
+                    store.cash = store.cash - unitR.GetComponent<AI>().price;
                     store.UpdateWallet();
                     store.isBenchPosFull[index2] = true;
                     Debug.Log("Summon Red Guy");
+                    dj.PlayBuy();
                 }
                 else if (portraitX == portraitG)
                 {
@@ -148,10 +155,11 @@ public class PurchaseUnit : MonoBehaviour
                     u1.transform.localScale = new Vector3(5f, 5f, 5f);
                     u1.transform.parent = GameObject.Find("Grid").transform;
 
-                    store.cash = store.cash - unitG.GetComponent<Unit>().price;
+                    store.cash = store.cash - unitG.GetComponent<AI>().price;
                     store.UpdateWallet();
                     store.isBenchPosFull[index2] = true;
                     Debug.Log("Summon Green Guy");
+                    dj.PlayBuy();
                 }
                 else if (portraitX == portraitB)
                 {
@@ -160,14 +168,16 @@ public class PurchaseUnit : MonoBehaviour
                     u1.transform.localScale = new Vector3(5f, 5f, 5f);
                     u1.transform.parent = GameObject.Find("Grid").transform;
 
-                    store.cash = store.cash - unitB.GetComponent<Unit>().price;
+                    store.cash = store.cash - unitB.GetComponent<AI>().price;
                     store.UpdateWallet();
                     store.isBenchPosFull[index2] = true;
                     Debug.Log("Summon Blue Guy");
+                    dj.PlayBuy();
                 }
                 else
                 {
                     Debug.Log("There is no Unit to Summon");
+                    dj.PlayCantBuy();
                 }
             }
         }

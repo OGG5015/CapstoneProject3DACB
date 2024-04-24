@@ -17,6 +17,8 @@ public class BarTimer : MonoBehaviour
     public ReflectionProbe rp;
     public UIStore shop;
     public GameObject barricade;
+    public int rounds = 5;
+    public GameObject winScreen;
 
     private void Start()
     {
@@ -28,6 +30,7 @@ public class BarTimer : MonoBehaviour
     {
         DisplayBarTime();
         DnDScriptGuys = GameObject.FindGameObjectsWithTag("Unit");
+        CheckWinner();
     }
 
     void DisplayBarTime()
@@ -75,11 +78,14 @@ public class BarTimer : MonoBehaviour
                 rp.RenderProbe();
                 barricade.SetActive(true);
 
-                ////// Stop Units from moving //////
+                ////// Stop Units from moving and Turn On AI//////
                 foreach (GameObject d in DnDScriptGuys)
                 {
                     DnD = d.GetComponent<DragAndDrop>();
                     DnD.isPlanStage = false;
+
+                    d.GetComponent<AI>().combat = true;
+                    Debug.Log("Combat is " + d.GetComponent<AI>().combat + " for " + d.name);
                 }
 
             }
@@ -97,14 +103,40 @@ public class BarTimer : MonoBehaviour
                 DynamicGI.UpdateEnvironment();
                 rp.RenderProbe();
                 barricade.SetActive(false);
+                rounds --;
 
-                ////// Let Units Move //////
+                ////// Let Units Move and Turn Off AI //////
                 foreach (GameObject d in DnDScriptGuys)
                 {
                     DnD = d.GetComponent<DragAndDrop>();
                     DnD.isPlanStage = true;
+
+                    d.GetComponent<AI>().combat = false;
+                    Debug.Log("Combat is " + d.GetComponent<AI>().combat);
                 }
 
+            }
+        }
+    }
+
+    public void CheckWinner()
+    {
+        if (rounds <= 0)
+        {
+            winScreen.SetActive(true);
+            int healthSum = 0;
+            foreach (GameObject g in DnDScriptGuys)
+            {
+                healthSum = healthSum + g.GetComponent<AI>().currHp;
+            }
+
+            if (healthSum > 0)
+            {
+                GameObject.Find("CongratsMessage").GetComponent<TMP_Text>().text = "You Win!";
+            }
+            else
+            {
+                GameObject.Find("CongratsMessage").GetComponent<TMP_Text>().text = "You Lose!";
             }
         }
     }

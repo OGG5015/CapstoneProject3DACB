@@ -27,6 +27,12 @@ public class AI : MonoBehaviour{
     public int spd = 10;
     public int tier = 1;
     public float range = 1.0f;
+    public int price = 0;
+    public float drop = 0;
+
+    public float boostRange = 5.0f;
+
+    public float boostAmount = 5.0f;
     public bool phys = true;
     private string trait1;
     private string trait2;
@@ -41,7 +47,7 @@ public class AI : MonoBehaviour{
     private int distance;
     
     public GameObject nearestEnemy;
-    public float speed;
+    public float speed = 5.0f;
 
     //private float size;
 
@@ -52,23 +58,9 @@ public class AI : MonoBehaviour{
     Vector3 mousePosition;
     bool isDragging = false;
 
-    //Scan returns true if there is an enemy in range
-    bool Scan(int unit){
-        //hexGrid = GetComponentInParent<HexGrid>();
-
-        /*if(hexGrid == null)
-        {
-            hexGrid = GetComponentInParent<HexGrid>();
-        }*/
-
-        /*MouseController.instance.OnLeftMouseClick += OnLeftMouseClick;
-        MouseController.instance.OnRightMouseClick += OnRightMouseClick;*/
-
-        /*centrePosition.x = (x) * (OuterRadius(hexSize) * 1.5f);
-        centrePosition.y = 0f;
-        centrePosition.z = (z + x * 0.5f - x / 2) * (InnerRadius(hexSize) * 2f);*/
-
-        return false;
+    public int GetMaxHP() // had to add bc its static
+    {
+        return maxHp;
     }
 
     //returns the number of the unit that is the closest
@@ -85,64 +77,8 @@ public class AI : MonoBehaviour{
         return 0;
     }
 
-    //snap stuff
-    
-
-    private Vector3 GetMousePos()
-    {
-        return Camera.main.WorldToScreenPoint(transform.position);
-    }
-
-    private void OnMouseDown()
-    {
-        mousePosition = Input.mousePosition - GetMousePos();
-        isDragging = true;
-    }
-
-    private void OnMouseDrag()
-    {
-        if (isDragging)
-        {
-            transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition - mousePosition);
-        }
-    }
-
-    private void OnMouseUp()
-    {
-        SnapToHexOrUnitBench();
-
-        isDragging = false;
-    }
-
     public void setHp(int dmg) {
         currHp -= dmg;
-    }
-
-    private void SnapToHexOrUnitBench()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit[] hits = Physics.RaycastAll(ray);
-
-        foreach (RaycastHit hit in hits)
-        {
-            hexGrid = hit.collider.GetComponent<HexGrid>();
-            unitBench = hit.collider.GetComponent<UnitBench>();
-
-            if (hexGrid != null)
-            {
-                SnapToHexCenter();
-                return;
-            }
-            else if (unitBench != null)
-            {
-                Debug.Log("Unit bench: " + unitBench);
-                SnapToUnitBench();
-                return;
-            }
-        }
-
-        Debug.Log("Neither hex grid nor unit bench found");
-
     }
 
     public void fight() {
@@ -163,88 +99,6 @@ public class AI : MonoBehaviour{
         }
     }
 
-    private void SnapToHexCenter()
-    {
-
-        Ray ray = Camera.main.ScreenPointToRay(gameObject.transform.position);
-        RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-        {
-            hexGrid = hit.collider.GetComponentInParent<HexGrid>();
-
-            if (hexGrid != null)
-            {
-
-                Vector2 offsetCoordinates = HexMetrics.CoordinateToOffset(hit.point.x, hit.point.z, hexGrid.HexSize, hexGrid.Orientation);
-                offsetCoordinates = HexMetrics.AxialRound(offsetCoordinates);
-
-                Vector3 center = HexMetrics.Center(hexGrid.HexSize, (int)offsetCoordinates.x, (int)offsetCoordinates.y, hexGrid.Orientation);
-
-                if (hexGrid.Orientation == HexOrientation.PointyTop)
-                {
-                    transform.position = new Vector3(center.x, transform.position.y, center.z);
-                }
-                else
-                {
-                    transform.position = center;
-                }
-
-                Debug.Log("Hex Center: " + offsetCoordinates);
-                Debug.Log("Snapped to: " + transform.position);
-            }
-            else
-            {
-                Debug.Log("Hex grid is null");
-            }
-        }
-
-
-
-    }
-
-    private void SnapToUnitBench()
-    {
-
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-        {
-            unitBench = hit.collider.GetComponentInParent<HexGrid>().GetComponentInChildren<UnitBench>();
-
-            if (unitBench != null)
-            {
-
-                Vector3 benchOrigin = new Vector3(
-                    unitBench.transform.position.x - (unitBench.Width) * unitBench.SquareSize / 2f,
-                    unitBench.transform.position.y,
-                    unitBench.transform.position.z
-                );
-
-                Vector3 localPoint = hit.point;
-                float distanceFromOriginX = localPoint.x - benchOrigin.x;
-                int cellIndex = Mathf.FloorToInt(distanceFromOriginX / unitBench.SquareSize);
-
-                float cellCenterX = benchOrigin.x + (cellIndex + 0.5f) * unitBench.SquareSize;
-                float cellCenterZ = unitBench.transform.position.z;
-                Vector3 cellCenter = new Vector3(cellCenterX, unitBench.transform.position.y, cellCenterZ);
-
-                transform.position = cellCenter;
-                Debug.Log("Snapped to: " + cellCenter);
-            }
-            else
-            {
-                Debug.Log("Unit bench is null");
-            }
-        }
-        else
-        {
-            Debug.Log("Raycast hit nothing");
-        }
-
-    }
-
     //Move moves the unit to an adjacent tile, updating x & y as well
     void Move(int unit, int enemy){ 
         
@@ -252,84 +106,189 @@ public class AI : MonoBehaviour{
 
     // Start is called before the first frame update
     void Start(){
-        target = gameObject.transform.position;
-
-
-
-        //size = GameObject.Find("/Grid").GetComponent();
-        //size = 5f;
+        nearestEnemy = FindClosestEnemy();
+        target = nearestEnemy.transform.position;
+        hexGrid = this.GetComponent<Collider>().GetComponentInParent<HexGrid>();
     }
 
-    void toggleCombat() {
+    public void toggleCombat() {
         combat = !combat;
+        Debug.Log("Combat is " +  combat);
     }
+
+    public GameObject FindClosestEnemy()
+    {
+        GameObject[] gos;
+
+        if (gameObject.tag == "T1") {
+            gos = GameObject.FindGameObjectsWithTag("T2");
+        }
+        else
+        {
+            gos = GameObject.FindGameObjectsWithTag("T1");
+        }
+        GameObject closest = null;
+        float distance = Mathf.Infinity;
+        Vector3 position = transform.position;
+        foreach (GameObject go in gos)
+        {
+            Vector3 diff = go.transform.position - position;
+            float curDistance = diff.sqrMagnitude;
+            if (curDistance < distance)
+            {
+                closest = go;
+                distance = curDistance;
+            }
+        }
+        return closest;
+    }
+
+    /*
+     * public GameObject FindClosestEnemy()
+    {
+        GameObject[] gos;
+
+        if (gameObject.tag == "T1") {
+            gos = GameObject.FindGameObjectsWithTag("T2");
+        }
+        else
+        {
+            gos = GameObject.FindGameObjectsWithTag("T1");
+        }
+        GameObject closest = null;
+        float distance = Mathf.Infinity;
+        Vector3 position = transform.position;
+        foreach (GameObject go in gos)
+        {
+            Vector3 diff = go.transform.position - position;
+            float curDistance = diff.sqrMagnitude;
+            if (curDistance < distance)
+            {
+                closest = go;
+                distance = curDistance;
+            }
+        }
+        return closest;
+    }
+     */
 
     bool inRange() {
-        if ((gameObject.transform.position - nearestEnemy.transform.position).sqrMagnitude <= (20f * range)) 
+
+        //Debug.Log("Calls inRange()");
+        if ((gameObject.transform.position - nearestEnemy.transform.position).sqrMagnitude <= ((hexGrid.HexSize*8f) * range))//was 20f 
         {
             return true;
         }
 
         return false;
     }
+    //Trait bonuses
+           public void BoostTraitsWithinRange()
+    {
+          foreach (GameObject unit in unitList)
+        {
+             if (unit.GetComponent<AI>().team == this.team)
+            {
+                foreach (GameObject otherUnit in unitList)
+                {
+                    if (otherUnit == unit || otherUnit.GetComponent<AI>().team != this.team)
+                        continue;
+
+                    float distance = Vector3.Distance(unit.transform.position, otherUnit.transform.position);
+
+                    if (distance <= boostRange)
+                    {
+                        AI unitAI = unit.GetComponent<AI>();
+                        AI otherUnitAI = otherUnit.GetComponent<AI>();
+
+                        unitAI.str += (int)boostAmount;
+                        unitAI.mag += (int)boostAmount;
+                        unitAI.def += (int)boostAmount;
+                        unitAI.spr += (int)boostAmount;
+                        unitAI.spd += (int)boostAmount;
+
+                        otherUnitAI.str += (int)boostAmount;
+                        otherUnitAI.mag += (int)boostAmount;
+                        otherUnitAI.def += (int)boostAmount;
+                        otherUnitAI.spr += (int)boostAmount;
+                        otherUnitAI.spd += (int)boostAmount;
+                     } } }
+                }
+                }
+
 
     // Update is called once per frame
     void Update(){
         //SnapToHexCenter();
+        Debug.Log("Name: " + gameObject.name);
+        Debug.Log("gameObject postion: " + gameObject.transform.position);
+        Debug.Log("target postion: " + target);
+        Debug.Log("nearestEnemy position: " + nearestEnemy.transform.position);
+        
 
-        if(currHp <= 0)
+        if (currHp <= 0)
         {
             Destroy(gameObject);
         }
 
-        if (combat  && nearestEnemy != null){
-            if (((gameObject.transform.position - target).sqrMagnitude <= 4f) && !inRange()) {
-                move = false;
+        if (nearestEnemy == null) {
+            nearestEnemy = FindClosestEnemy();
+        }
 
+        if (combat == true && nearestEnemy != null)
+        {
+            
+            if (((gameObject.transform.position - target).sqrMagnitude <= hexGrid.HexSize) && !inRange())
+            {
+                move = false;
+                Debug.Log("What is here?");
                 //x is greater
                 if (gameObject.transform.position.x > nearestEnemy.transform.position.x)
                 {
+                    Debug.Log("x is greater");
                     //unit is to upper right of target or on same y, move lower left
                     if (gameObject.transform.position.z >= nearestEnemy.transform.position.z)
                     {
-                        target.z = target.z - 5f;
-                        target.x = target.x - 8f;
+                        target.z = target.z - hexGrid.HexSize;
+                        target.x = target.x - (hexGrid.HexSize * 1.5f);
                     }
                     //unit is to lower right to target, move upper left
                     else if (gameObject.transform.position.z < nearestEnemy.transform.position.z)
                     {
-                        target.z = target.z + 5f;
-                        target.x = target.x - 8f;
+                        target.z = target.z + hexGrid.HexSize;
+                        target.x = target.x - (hexGrid.HexSize * 1.5f);
                     }
                 }
                 //x is less
                 else if (gameObject.transform.position.x < nearestEnemy.transform.position.x)
                 {
+                    Debug.Log("x is less");
                     //unit is to upper left of target, move lower right
                     if (gameObject.transform.position.z > nearestEnemy.transform.position.z)
                     {
-                        target.y = target.y - 5f;
-                        target.x = target.x + 8f;
+                        target.z = target.z - hexGrid.HexSize;
+                        target.x = target.x + (hexGrid.HexSize * 1.5f);
                     }
                     //unit is to lower left of target or same y, move upper right
                     else if (gameObject.transform.position.z <= nearestEnemy.transform.position.z)
                     {
-                        target.z = target.z + 5f;
-                        target.x = target.x + 8f;
+                        target.z = target.z + hexGrid.HexSize;
+                        target.x = target.x + (hexGrid.HexSize * 1.5f);
                     }
                 }
                 //x is equal
                 else 
                 {
+                    Debug.Log("x is equal");
                     //unit is above target, move down
                     if (gameObject.transform.position.z > nearestEnemy.transform.position.z)
                     {
-                        target.z = target.z - 10f;
+                        target.z = target.z - (hexGrid.HexSize * 1.5f);
                     }
                     //unit is below target, move up
                     else if (gameObject.transform.position.z < nearestEnemy.transform.position.z)
                     {
-                        target.z = target.z + 10f;
+                        target.z = target.z + (hexGrid.HexSize * 1.5f);
                     }
                 }
 
@@ -337,53 +296,32 @@ public class AI : MonoBehaviour{
 
                 
             }
+            else { Debug.Log("Math: " +((gameObject.transform.position - target).sqrMagnitude) + " ? " + hexGrid.HexSize); }
             
             if (inRange())
                 {
                     fight();
                 }
 
-            if (move) 
+            if (move)
             {
                 gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, target, speed);
             }
+            //Calling trait bonus
+            //BoostTraitsWithinRange(); 
 
             /*if (move) {
 
                 self.transform.position = Vector3.MoveTowards(self.transform.position, nearestEnemy.transform.position, speed);
             }*/
         }
-        
-        /*
-        SnapToHexCenter();
-        if (combat){
-            self.transform.position = Vector3.MoveTowards(self.transform.position, nearestEnemy.transform.position, speed);
-            SnapToHexCenter();
-            //AIFunctionality();
 
-            for (int unit = 0; unit < unitList.Count; unit++){
-                if (Scan(unit)){
-                    Attack(unit, getNearest(unit));
-                }
-                else {
-                    Move(unit, getNearest(unit));
-                }
-            }
+        if (gameObject.transform.position != target && nearestEnemy == null) 
+        {
+            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, target, speed);
         }
-        */
-
-
     }
 
-    //nearestInRange returns true if nearest enemy unit is within range
-    /*bool nearestInRange(int unit){
-        if ((unitList[unit].getRange() > 0) && (Vector3.Distance(transform.position, target.position) > unitList[unit].getRange())){
-            return false;
-        }
-        else{
-            return true;
-        }
-    }*/
     void AIFunctionality(int unit){
         if ((!requireTarget)){
             return; //if no target was set and we require one, AI will not function.
@@ -396,20 +334,6 @@ public class AI : MonoBehaviour{
         if (requireTarget){
             fight();
         }
-        /*else if (nearestInRange()){
-            if (!toggle){
-                return;
-            }
-            if (distance > unitList[unit].getRange()){
-                canAttack = false; //the target is too far away to attack
-                Move(unit, getNearest(unit)); //move closer
-            }
-        }*/
-            //start attacking if close enough
-
-        /*if ((distance < unitList[unit].getRange())){
-            Attack(unit, target);
-        }*/
     }
 }
 

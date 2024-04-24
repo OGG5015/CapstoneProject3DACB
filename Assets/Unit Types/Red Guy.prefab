@@ -63,6 +63,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4240930300901675388, guid: 0bd3bbead16e9854f94731840b63d257, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1737001170486469328}
+    - targetCorrespondingSourceObject: {fileID: 4240930300901675388, guid: 0bd3bbead16e9854f94731840b63d257, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -6455983980009014080}
   m_SourcePrefab: {fileID: 100100000, guid: 0bd3bbead16e9854f94731840b63d257, type: 3}
 --- !u!1 &2676419587962262852 stripped
 GameObject:
@@ -89,3 +92,34 @@ MonoBehaviour:
   spd: 4
   range: 2
   price: 3
+--- !u!114 &-6455983980009014080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2676419587962262852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74f8acc8d69e5ee41b7cb256ffe4e654, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currHp: 40
+  str: 20
+  mag: 20
+  def: 5
+  spr: 5
+  spd: 11
+  tier: 1
+  range: 1
+  price: 12
+  drop: 6
+  boostRange: 5
+  boostAmount: 5
+  phys: 1
+  team: 1
+  sFight: 0
+  combat: 1
+  move: 1
+  nearestEnemy: {fileID: 0}
+  speed: 0

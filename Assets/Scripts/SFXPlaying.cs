@@ -8,6 +8,8 @@ public class SFXPlaying : MonoBehaviour
     public AudioClip select;
     public AudioClip drop;
     public AudioClip pickup;
+    public AudioClip buy;
+    public AudioClip cantBuy;
     int dice = 0;
 
     public void PlaySelect()
@@ -25,6 +27,18 @@ public class SFXPlaying : MonoBehaviour
     public void PlayPickup()
     {
         foley.clip = pickup;
+        foley.Play();
+    }
+
+    public void PlayBuy()
+    {
+        foley.clip = buy;
+        foley.Play();
+    }
+
+    public void PlayCantBuy()
+    {
+        foley.clip = cantBuy;
         foley.Play();
     }
 

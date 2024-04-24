@@ -8,6 +8,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -6455983980009014080, guid: 5571701fed728ef4e8e2bfdb3ceef8ef, type: 3}
+      propertyPath: drop
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -6455983980009014080, guid: 5571701fed728ef4e8e2bfdb3ceef8ef, type: 3}
+      propertyPath: price
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 1143477019078107199, guid: 5571701fed728ef4e8e2bfdb3ceef8ef, type: 3}
       propertyPath: m_LocalPosition.x
       value: 15
@@ -60,20 +68,21 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 61b2ae45e4af3ee43adb4b43af495567, type: 2}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -6455983980009014080, guid: 5571701fed728ef4e8e2bfdb3ceef8ef, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 2676419587962262852, guid: 5571701fed728ef4e8e2bfdb3ceef8ef, type: 3}
       insertIndex: -1
-      addedObject: {fileID: -5776201641041654356}
+      addedObject: {fileID: 8411745706838037065}
   m_SourcePrefab: {fileID: 100100000, guid: 5571701fed728ef4e8e2bfdb3ceef8ef, type: 3}
 --- !u!1 &280359779399143743 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2676419587962262852, guid: 5571701fed728ef4e8e2bfdb3ceef8ef, type: 3}
   m_PrefabInstance: {fileID: 2792377818225820795}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &-5776201641041654356
+--- !u!114 &8411745706838037065
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -82,14 +91,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 280359779399143743}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 480ebf5dfe70f1b48b63c1403909f53d, type: 3}
+  m_Script: {fileID: 11500000, guid: 74f8acc8d69e5ee41b7cb256ffe4e654, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHp: 100
-  str: 1
-  mag: 2
-  def: 3
-  spr: 2
-  spd: 1
-  range: 2
-  price: 0
+  currHp: 40
+  str: 15
+  mag: 15
+  def: 10
+  spr: 10
+  spd: 10
+  tier: 1
+  range: 1
+  price: 6
+  drop: 3
+  boostRange: 5
+  boostAmount: 5
+  phys: 1
+  team: 1
+  sFight: 0
+  combat: 1
+  move: 1
+  nearestEnemy: {fileID: 0}
+  speed: 0

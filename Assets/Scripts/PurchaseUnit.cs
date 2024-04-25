@@ -156,18 +156,21 @@ public class PurchaseUnit : MonoBehaviour
                 else if (portraitX == portraitG)
                 {
                     unitCell = new Vector3(cellCenterX + (mindy.SquareSize * index2), mindy.transform.position.y, cellCenterZ);
-                    u1 = Instantiate(unitG, unitCell, Quaternion.identity);
+                    //u1 = Instantiate(unitG, unitCell, Quaternion.identity);
+                    u1 = NetworkObject.Instantiate(unitG, unitCell, Quaternion.identity);
+                    SetOwnership(u1);
                     u1.transform.localScale = new Vector3(5f, 5f, 5f);
                     //u1.transform.parent = GameObject.Find("Grid").transform;
                     
-                    u1.transform.parent = GameObject.Find("Player1Units").transform;
+                    u1.transform.parent = GameObject.Find("Grid").transform;
                     store.cash = store.cash - unitG.GetComponent<Unit>().price;
                     store.UpdateWallet();
                     store.isBenchPosFull[index2] = true;
                     Debug.Log("Summon Green Guy");
-                    SetOwnership(u1);
+                    
                     //u1.GetComponent<NetworkObject>().ChangeOwnership(NetworkManager.Singleton.LocalClientId);
                     Debug.Log("The owner of this unit is " + u1.GetComponent<NetworkObject>().OwnerClientId);
+
                 }
                 else if (portraitX == portraitB)
                 {

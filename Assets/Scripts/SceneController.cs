@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -21,17 +22,25 @@ public class CustomSceneManager : MonoBehaviour
         }
     }
 
-    public void PlayerJoined()
+    public async void PlayerJoined()
     {
-        playerCount++;
+        /*playerCount++;
         if (playerCount <= MaxPlayersPerScene)
         {
+            SceneManager.LoadScene("Countdown", LoadSceneMode.Additive);
+            await Task.Delay(3000);
             SceneManager.LoadScene("Game View", LoadSceneMode.Additive);
         }
         else
         {
-            SceneManager.LoadScene("Countdown", LoadSceneMode.Additive);
-        }
+            
+        }*/
+
+        SceneManager.LoadScene("Countdown", LoadSceneMode.Additive);
+        await Task.Delay(2000);
+        Scene gameViewScene = SceneManager.GetSceneByName("Game View");
+        SceneManager.LoadScene("Game View", LoadSceneMode.Additive);
+        SceneManager.SetActiveScene(gameViewScene);
     }
 
     public void PlayerLeft()

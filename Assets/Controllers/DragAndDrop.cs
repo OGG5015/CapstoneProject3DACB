@@ -59,6 +59,7 @@ public class DragAndDrop : MonoBehaviour
 
             isDragging = false;
             dj.PlayDrop();
+            GetComponent<PlayerNetwork>().unitPosition.Value = transform.position;
         }
     }
 

@@ -20,7 +20,4 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Game View.unity
     guid: d4e4b68992f69e64fa87f7058295c7f1
-  - enabled: 1
-    path: Assets/Scenes/Countdown.unity
-    guid: 386bb283decc62947b88e0c0735b2faa
   m_configObjects: {}

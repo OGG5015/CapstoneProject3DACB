@@ -11,7 +11,7 @@ using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine.SceneManagement;
 using Unity.Services.Samples.Friends;
-using Microsoft.Unity.VisualStudio.Editor;
+//using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine.UI;
 using UnityEditor;
 using TMPro;
@@ -21,13 +21,13 @@ using Unity.Services.Lobbies;
 using Unity.Services.Multiplay;
 using Unity.VisualScripting;
 using UnityEngine.Networking;
-using Unity.Netcode.Editor.Configuration;
+//using Unity.Netcode.Editor.Configuration;
 using Unity.Networking.Transport;
 using static ServerStartUp;
 
 
-using UnityEditor.PackageManager;
-using Unity.Netcode.Editor;
+//using UnityEditor.PackageManager;
+//using Unity.Netcode.Editor;
 
 #if UNITY_EDITOR
 using ParrelSync;
@@ -239,7 +239,7 @@ public class MatchmakerClient : MonoBehaviour
         Debug.Log($"Ticket Assigned: {assignment.Ip}:{assignment.Port}");
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(assignment.Ip, (ushort)assignment.Port);
         OnServerInfoReceived?.Invoke(assignment.Ip, (int)assignment.Port, true);
-        Debug.Log(assignment.MatchId);
+        
 
         //NetworkManager.Singleton.StartClient();
 
@@ -251,8 +251,8 @@ public class MatchmakerClient : MonoBehaviour
         }*/
         NetworkManager.Singleton.StartClient();
         await Task.Delay(2000);
-
-        RpcReceiveRoomAssignment(NetworkManager.Singleton.LocalClientId, (int) roomassignment);
+        CustomSceneManager.Instance.PlayerJoined();
+        //RpcReceiveRoomAssignment(NetworkManager.Singleton.LocalClientId, (int) roomassignment);
         //LoadRoom1();
 
         //Scene currScene = SceneManager.GetActiveScene();
@@ -266,7 +266,7 @@ public class MatchmakerClient : MonoBehaviour
         //  MAKE SCRIPT NOT DESTROYABLE OR MAKE GAME OBJECT NOT DESTROYABLE.
 
         //SceneManager.UnloadSceneAsync(SceneManager.GetSceneByName("Game_Options"));
-        // SceneManager.SetActiveScene(nextScene);
+        //SceneManager.SetActiveScene(nextScene);
 
 
         //NetworkManager.Singleton.SceneManager.LoadScene("Game View", LoadSceneMode.Single);

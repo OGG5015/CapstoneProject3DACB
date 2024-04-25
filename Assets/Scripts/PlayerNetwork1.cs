@@ -9,6 +9,13 @@ public class PlayerNetwork : NetworkBehaviour
     private NetworkVariable<int> randomNumber = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     public NetworkVariable<Vector3> unitPosition = new NetworkVariable<Vector3>();
 
+    private void Start()
+    {
+        if(IsOwner)
+        {
+            CustomSceneManager.Instance.PlayerJoined();
+        }
+    }
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
@@ -60,6 +67,14 @@ public class PlayerNetwork : NetworkBehaviour
 
         float moveSpeed = 3f;
         transform.position += moveDir *moveSpeed*Time.deltaTime;
+    }
+
+    private void OnDestroy()
+    {
+        if (IsOwner)
+        {
+            CustomSceneManager.Instance.PlayerLeft();
+        }
     }
 }
 

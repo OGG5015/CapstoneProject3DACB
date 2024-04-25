@@ -743,7 +743,7 @@ PlayerSettings:
     PS4: 
     PS5: 
     QNX: 
-    Server: DEDICATED_SERVER
+    Server: client
     Stadia: 
     Standalone: 
     VisionOS: 

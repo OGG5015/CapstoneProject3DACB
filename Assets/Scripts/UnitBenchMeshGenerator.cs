@@ -9,6 +9,7 @@ public class UnitBenchMeshGenerator : MonoBehaviour
     [field: SerializeField] public LayerMask gridLayer { get; private set; }
     [field: SerializeField] public UnitBench unitBench { get; private set; }
     public Transform explosionTest;
+    public UIStore shop;
 
     private void Awake()
     {
@@ -19,6 +20,12 @@ public class UnitBenchMeshGenerator : MonoBehaviour
         {
             Debug.LogError("UnitBenchMeshGenerator could not find a UnitBench component in its parent or itself");
         }
+
+    }
+
+    private void Start()
+    {
+        shop = GameObject.Find("UIStore").GetComponent<UIStore>();
     }
 
     private void OnEnable()
@@ -147,12 +154,33 @@ public class UnitBenchMeshGenerator : MonoBehaviour
         Vector3 localPoint = transform.InverseTransformPoint(hit.point);
         float distanceFromOriginX = localPoint.x - benchOrigin.x;
         int cellIndex = Mathf.FloorToInt(distanceFromOriginX / unitBench.SquareSize);
+        shop.isBenchPosFull[cellIndex] = false; // notify store
+        Debug.Log("Bench is " + shop.isBenchPosFull[cellIndex] + " at " + cellIndex);
         Debug.Log("Clicked on unit bench cell " + cellIndex);
 
         float cellCenterX = benchOrigin.x + (cellIndex + /*0.5f*/ 1f) * unitBench.SquareSize;
         float cellCenterZ = unitBench.transform.position.z;
         Vector3 cellCenter = new Vector3(cellCenterX, unitBench.transform.position.y, cellCenterZ);
         Debug.Log("Center of the clicked cell: " + cellCenter);
+
+    }
+
+    // return cellCenter if called
+    public Vector3 GetCellCenter(float index)
+    {
+        Vector3 benchOrigin = new Vector3(
+        unitBench.transform.position.x - (unitBench.Width * unitBench.SquareSize / 2f),
+        transform.position.y,
+        transform.position.z - (unitBench.Width * unitBench.SquareSize / 2f));
+
+        if (index == 0) { return benchOrigin; }
+
+        float cellCenterX = benchOrigin.x + (index + 1f) * unitBench.SquareSize;
+        float cellCenterZ = unitBench.transform.position.z;
+        Vector3 cellCenter = new Vector3(cellCenterX, unitBench.transform.position.y, cellCenterZ);
+        Debug.Log("Getting cell center of index " + index + ": " + cellCenter);
+
+        return cellCenter;
 
     }
 

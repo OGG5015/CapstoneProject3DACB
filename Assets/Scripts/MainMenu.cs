@@ -12,6 +12,12 @@ public class MainMenu : MonoBehaviour
 
     }
 
+    public float speed;
+    void Update()
+    {
+        RenderSettings.skybox.SetFloat("_Rotation", Time.time * speed);
+    }
+
     //Quit Game
     public void Quit()
     {

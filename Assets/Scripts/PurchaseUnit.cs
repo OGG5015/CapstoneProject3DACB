@@ -8,6 +8,7 @@ using TMPro;
 using System;
 using System.Drawing;
 using System.Linq;
+using Unity.Netcode;
 
 
 public class PurchaseUnit : MonoBehaviour
@@ -22,6 +23,14 @@ public class PurchaseUnit : MonoBehaviour
     public int index;
     public GameObject button;
     public UIStore store;
+
+     private ulong clientOwnerId;
+
+    // Method to set the client owner ID
+    public void SetClientOwner(ulong clientId)
+    {
+        clientOwnerId = clientId;
+    }
 
     public void DisplayStats()
     {
@@ -97,6 +106,7 @@ public class PurchaseUnit : MonoBehaviour
 
     public void SummonUnit()
     {
+        
         //Debug.Log("SummonUnit is called!");
 
         if (store.isBenchPosFull.Contains(false))
@@ -140,18 +150,24 @@ public class PurchaseUnit : MonoBehaviour
                     store.UpdateWallet();
                     store.isBenchPosFull[index2] = true;
                     Debug.Log("Summon Red Guy");
+
+                    
                 }
                 else if (portraitX == portraitG)
                 {
                     unitCell = new Vector3(cellCenterX + (mindy.SquareSize * index2), mindy.transform.position.y, cellCenterZ);
                     u1 = Instantiate(unitG, unitCell, Quaternion.identity);
                     u1.transform.localScale = new Vector3(5f, 5f, 5f);
-                    u1.transform.parent = GameObject.Find("Grid").transform;
-
+                    //u1.transform.parent = GameObject.Find("Grid").transform;
+                    
+                    u1.transform.parent = GameObject.Find("Player1Units").transform;
                     store.cash = store.cash - unitG.GetComponent<Unit>().price;
                     store.UpdateWallet();
                     store.isBenchPosFull[index2] = true;
                     Debug.Log("Summon Green Guy");
+                    SetOwnership(u1);
+                    //u1.GetComponent<NetworkObject>().ChangeOwnership(NetworkManager.Singleton.LocalClientId);
+                    Debug.Log("The owner of this unit is " + u1.GetComponent<NetworkObject>().OwnerClientId);
                 }
                 else if (portraitX == portraitB)
                 {
@@ -171,5 +187,19 @@ public class PurchaseUnit : MonoBehaviour
                 }
             }
         }
+    }
+    private void SetOwnership(GameObject unit)
+    {
+        if (unit.TryGetComponent(out NetworkObject networkObject))
+        {
+            networkObject.ChangeOwnership(clientOwnerId);
+
+        }
+    }
+
+    private ulong GetOwnerID(ulong ownerID)
+    {
+        ulong clientInstanceId = unitG.GetComponent<NetworkObject>().OwnerClientId;
+        return clientInstanceId;
     }
 }

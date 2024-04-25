@@ -1,3 +1,4 @@
+using System;
 using System.Data;
 using Unity.Netcode;
 using UnityEngine;
@@ -19,6 +20,11 @@ public class PlayerNetwork : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
+
+        if (IsOwner)
+        {
+            SetClientOwnership();
+        }
         //Initialize();
     }
     /*public override void OnNetworkSpawn()
@@ -54,9 +60,9 @@ public class PlayerNetwork : NetworkBehaviour
         //Debug.Log(OwnerClientId + "; randomNumber" + randomNumber.Value);
         if(!IsOwner) return;
         
-        if(Input.GetKeyDown(KeyCode.T))
+        if(NetworkObject.GetComponent<DragAndDrop>().isDragging)
         {
-            randomNumber.Value = Random.Range(0,100);
+            unitPosition.Value = NetworkObject.GetComponent<Vector3>();
         }
         Vector3 moveDir = new Vector3(0,0,0);
 
@@ -75,6 +81,18 @@ public class PlayerNetwork : NetworkBehaviour
         {
             CustomSceneManager.Instance.PlayerLeft();
         }
+    }
+
+    private void SetClientOwnership()
+    {
+        GameObject playerUnit = GameObject.FindGameObjectWithTag("Unit");
+
+        if (playerUnit.TryGetComponent(out NetworkObject networkObject))
+            {
+                // Ensure client ownership for the unit
+                networkObject.ChangeOwnership(NetworkManager.Singleton.LocalClientId);
+            }
+        
     }
 }
 

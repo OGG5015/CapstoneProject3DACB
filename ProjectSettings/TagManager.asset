@@ -10,6 +10,8 @@ TagManager:
   - Unit
   - Collide
   - Shelf
+  - T1
+  - T2
   layers:
   - Default
   - TransparentFX

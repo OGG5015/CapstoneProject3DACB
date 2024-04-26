@@ -52,6 +52,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Red Guy
       objectReference: {fileID: 0}
+    - target: {fileID: 4240930300901675388, guid: 0bd3bbead16e9854f94731840b63d257, type: 3}
+      propertyPath: m_TagString
+      value: T1
+      objectReference: {fileID: 0}
     - target: {fileID: 8494738901422966601, guid: 0bd3bbead16e9854f94731840b63d257, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -63,6 +67,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4240930300901675388, guid: 0bd3bbead16e9854f94731840b63d257, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1737001170486469328}
+    - targetCorrespondingSourceObject: {fileID: 4240930300901675388, guid: 0bd3bbead16e9854f94731840b63d257, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3719002748387394857}
   m_SourcePrefab: {fileID: 100100000, guid: 0bd3bbead16e9854f94731840b63d257, type: 3}
 --- !u!1 &2676419587962262852 stripped
 GameObject:
@@ -89,3 +96,32 @@ MonoBehaviour:
   spd: 4
   range: 2
   price: 3
+--- !u!114 &3719002748387394857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2676419587962262852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e8b4c06b6297ee4393f1518a5064652, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currHp: 40
+  str: 15
+  mag: 15
+  def: 10
+  spr: 10
+  spd: 10
+  tier: 1
+  range: 1
+  boostRange: 5
+  boostAmount: 5
+  phys: 1
+  team: 1
+  sFight: 1
+  combat: 0
+  move: 1
+  nearestEnemy: {fileID: 0}
+  speed: 0.1

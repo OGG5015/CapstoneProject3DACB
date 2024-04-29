@@ -19,6 +19,7 @@ public class AI : MonoBehaviour{
     //int nearesty;
 
     public static int maxHp = 40;
+    public GameObject timer;
     public int currHp = maxHp;
     public int str = 15;
     public int mag = 15;
@@ -37,7 +38,7 @@ public class AI : MonoBehaviour{
     public int team = 1;
     public bool sFight = false;
 
-    public bool combat = false; //toggles if combat is active or not
+    public bool combat; //toggles if combat is active or not
     public bool move = true; //toggles if unit should move or not
     private ArrayList unitList = new ArrayList();
     private bool requireTarget;
@@ -45,7 +46,7 @@ public class AI : MonoBehaviour{
     private int distance;
     
     public GameObject nearestEnemy;
-    public float speed;
+    public float speed = .1f;
 
     //private float size;
 
@@ -73,31 +74,7 @@ public class AI : MonoBehaviour{
     //snap stuff
     
 
-    private Vector3 GetMousePos()
-    {
-        return Camera.main.WorldToScreenPoint(transform.position);
-    }
-
-    private void OnMouseDown()
-    {
-        mousePosition = Input.mousePosition - GetMousePos();
-        isDragging = true;
-    }
-
-    private void OnMouseDrag()
-    {
-        if (isDragging)
-        {
-            transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition - mousePosition);
-        }
-    }
-
-    private void OnMouseUp()
-    {
-        SnapToHexOrUnitBench();
-
-        isDragging = false;
-    }
+    
 
     public void setHp(int dmg) {
         currHp -= dmg;
@@ -285,10 +262,11 @@ public class AI : MonoBehaviour{
         nearestEnemy = FindClosestEnemy();
         target = gameObject.transform.position;
         hexGrid = this.GetComponent<Collider>().GetComponentInParent<HexGrid>();
+        timer = GameObject.Find("timerFill");
     }
 
     public void toggleCombat() {
-        combat = !combat;
+        this.combat = !this.combat;
     }
 
     public GameObject FindClosestEnemy()
@@ -395,6 +373,14 @@ public class AI : MonoBehaviour{
     // Update is called once per frame
     void Update(){
         //SnapToHexCenter();
+
+        if (timer.GetComponent<BarTimer>().isStagePlanning)
+        {
+            this.combat = false;
+        }
+        else {
+            this.combat = true;
+        }
 
         if(currHp <= 0)
         {

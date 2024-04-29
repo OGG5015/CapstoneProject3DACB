@@ -23311,6 +23311,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e8b4c06b6297ee4393f1518a5064652, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timer: {fileID: 0}
   currHp: 40
   str: 15
   mag: 15
@@ -23459,7 +23460,7 @@ PrefabInstance:
       value: T2
       objectReference: {fileID: 0}
     m_RemovedComponents:
-    - {fileID: 3549277324352275353, guid: 6bbfccd20ddd9b04c90abf9830215ba0, type: 3}
+    - {fileID: 0}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -23495,6 +23496,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e8b4c06b6297ee4393f1518a5064652, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timer: {fileID: 0}
   currHp: 40
   str: 15
   mag: 15
@@ -26431,7 +26433,7 @@ PrefabInstance:
       value: T2
       objectReference: {fileID: 0}
     m_RemovedComponents:
-    - {fileID: 3549277324352275353, guid: 6bbfccd20ddd9b04c90abf9830215ba0, type: 3}
+    - {fileID: 0}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -26467,6 +26469,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e8b4c06b6297ee4393f1518a5064652, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timer: {fileID: 0}
   currHp: 40
   str: 15
   mag: 15
@@ -30275,7 +30278,7 @@ PrefabInstance:
       value: T2
       objectReference: {fileID: 0}
     m_RemovedComponents:
-    - {fileID: 3719002748387394857, guid: 5571701fed728ef4e8e2bfdb3ceef8ef, type: 3}
+    - {fileID: 0}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -30300,6 +30303,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e8b4c06b6297ee4393f1518a5064652, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timer: {fileID: 0}
   currHp: 40
   str: 15
   mag: 15
@@ -35299,7 +35303,7 @@ PrefabInstance:
       value: T2
       objectReference: {fileID: 0}
     m_RemovedComponents:
-    - {fileID: 3719002748387394857, guid: 5571701fed728ef4e8e2bfdb3ceef8ef, type: 3}
+    - {fileID: 0}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -35329,6 +35333,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e8b4c06b6297ee4393f1518a5064652, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timer: {fileID: 0}
   currHp: 40
   str: 15
   mag: 15
@@ -43402,6 +43407,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e8b4c06b6297ee4393f1518a5064652, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timer: {fileID: 0}
   currHp: 40
   str: 15
   mag: 15
@@ -53392,6 +53398,10 @@ PrefabInstance:
       propertyPath: winScreen
       value: 
       objectReference: {fileID: 1817525746}
+    - target: {fileID: 5765479086153246571, guid: 44ddd5d7443aa1540ae5d08a61a7ee2e, type: 3}
+      propertyPath: timeRemaining
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 5765479086153246571, guid: 44ddd5d7443aa1540ae5d08a61a7ee2e, type: 3}
       propertyPath: DnDScriptGuys.Array.size
       value: 0

@@ -74,7 +74,7 @@ PrefabInstance:
       addedObject: {fileID: -5776201641041654356}
     - targetCorrespondingSourceObject: {fileID: 2676419587962262852, guid: 5571701fed728ef4e8e2bfdb3ceef8ef, type: 3}
       insertIndex: -1
-      addedObject: {fileID: -2142238214769318890}
+      addedObject: {fileID: -8260018160821841930}
   m_SourcePrefab: {fileID: 100100000, guid: 5571701fed728ef4e8e2bfdb3ceef8ef, type: 3}
 --- !u!1 &280359779399143743 stripped
 GameObject:
@@ -101,7 +101,7 @@ MonoBehaviour:
   spd: 1
   range: 2
   price: 0
---- !u!114 &-2142238214769318890
+--- !u!114 &-8260018160821841930
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -113,6 +113,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e8b4c06b6297ee4393f1518a5064652, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timer: {fileID: 0}
   currHp: 40
   str: 15
   mag: 15
@@ -125,8 +126,8 @@ MonoBehaviour:
   boostAmount: 5
   phys: 1
   team: 1
-  sFight: 1
+  sFight: 0
   combat: 0
   move: 1
   nearestEnemy: {fileID: 0}
-  speed: 0.1
+  speed: 0.01
